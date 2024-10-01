@@ -9,7 +9,6 @@ class MemberController extends GetxController {
   final RxList<Map<String, dynamic>> members = <Map<String, dynamic>>[].obs;
   // List to store filtered members for the search
   final RxList<Map<String, dynamic>> filteredMembers = <Map<String, dynamic>>[].obs;
-
   // To hold the search query
   final RxString searchQuery = ''.obs;
 
@@ -25,6 +24,16 @@ class MemberController extends GetxController {
     Logger.info(newMember.toString());
     await database.insert('members', newMember);
     fetchMembers();
+  }
+
+  //for sale page
+  final RxBool isMemberSelected = false.obs;
+  final RxMap<String, dynamic> selectedMember = <String, dynamic>{}.obs;
+
+  // Method to select a member
+  void selectMember(Map<String, dynamic> member) {
+    selectedMember.assignAll(member);
+    isMemberSelected.value = true;
   }
 
   // Method to edit a member
@@ -44,20 +53,6 @@ class MemberController extends GetxController {
     members.assignAll(memberList);
     searchMembers(searchQuery.value); // Apply the search if any
   }
-
-  // Search members based on the search query
-  // void searchMembers(String query) {
-  //   searchQuery.value = query;
-  //   if (query.isEmpty) {
-  //     filteredMembers.assignAll(members);
-  //   } else {
-  //     filteredMembers.assignAll(
-  //       members.where((member) => member['name']
-  //           .toLowerCase()
-  //           .contains(query.toLowerCase())).toList(),
-  //     );
-  //   }
-  // }
 
   void searchMembers(String query) {
     searchQuery.value = query;

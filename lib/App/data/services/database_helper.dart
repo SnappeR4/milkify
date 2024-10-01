@@ -1,4 +1,7 @@
+import 'package:milkify/App/data/models/member.dart';
+import 'package:milkify/App/data/models/product.dart';
 import 'package:milkify/App/data/models/profile_model.dart';
+import 'package:milkify/App/data/models/transaction.dart';
 import 'package:milkify/App/utils/logger.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -171,6 +174,21 @@ class DatabaseHelper {
   Future<void> updateProfile(Profile profile) async {
     final db = await database;
     await db.update('profile', profile.toMap());
+  }
+
+  // Get product by milk type
+  static Future<Product> getProductByMilkType(String milkType) async {
+    final List<Map<String, dynamic>> result = await _database!.query(
+      'product',
+      where: 'name = ?',
+      whereArgs: [milkType],
+    );
+    return Product.fromMap(result.first);
+  }
+
+  // Insert a transaction
+  static Future<void> saveTransaction(Transactions transaction) async {
+    await _database!.insert('transactions', transaction.toMap());
   }
 // Add methods to interact with the database
 // For example, insert, update, delete operations.
