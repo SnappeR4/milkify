@@ -21,7 +21,7 @@ class AppTheme {
       onSecondary: Colors.white,
       onSurface: Colors.black,
     ),
-    scaffoldBackgroundColor: color1, // #eaf4f9
+    scaffoldBackgroundColor: Colors.white, // #eaf4f9
     appBarTheme: const AppBarTheme(
       backgroundColor: color2, // #30b2e4
       titleTextStyle: TextStyle(

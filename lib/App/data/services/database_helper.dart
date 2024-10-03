@@ -190,6 +190,31 @@ class DatabaseHelper {
   static Future<void> saveTransaction(Transactions transaction) async {
     await _database!.insert('transactions', transaction.toMap());
   }
+  static Future<Map<String, dynamic>?> getLastTransaction() async {
+    // Query to get the last transaction based on the highest id
+    final List<Map<String, dynamic>> result = await _database!.query(
+      'transactions',
+      orderBy: 'tr_id DESC',
+      limit: 1,
+    );
+
+    // Return null if there are no transactions
+    if (result.isEmpty) return null;
+
+    return result.first; // Return the last transaction row
+  }
+
+  static Future<List<Transactions>> getTransactions() async {
+    final List<Map<String, dynamic>> rawTransactions = await _database!.query(
+      'transactions',
+      orderBy: 'tr_id DESC',
+      limit: 2,
+    );
+    // Convert to List<Transactions>
+    return rawTransactions.map((transactionMap) {
+      return Transactions.fromMap(transactionMap);
+    }).toList();
+  }
 // Add methods to interact with the database
 // For example, insert, update, delete operations.
 //demo access in controllers

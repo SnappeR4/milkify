@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:milkify/App/controllers/sale_controller.dart';
+import 'package:milkify/App/data/models/transaction.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../data/services/database_helper.dart';
@@ -27,15 +29,18 @@ class MemberController extends GetxController {
   }
 
   //for sale page
-  final RxBool isMemberSelected = false.obs;
+  var isMemberSelected = false.obs;
   final RxMap<String, dynamic> selectedMember = <String, dynamic>{}.obs;
-
+  final SaleController saleController = Get.find<SaleController>();
   // Method to select a member
   void selectMember(Map<String, dynamic> member) {
     selectedMember.assignAll(member);
     isMemberSelected.value = true;
+    saleController.fetchTransactions();
   }
-
+  void setMemberSelected(bool selected) {
+    isMemberSelected.value = selected;
+  }
   // Method to edit a member
   Future<void> editMember(Map<String, dynamic> member) async {
     await database.update(
@@ -108,6 +113,68 @@ class MemberController extends GetxController {
     }
   }
 
+  Future<void> submitTransaction(Map<String, dynamic> member, double liters, double rate, double total) async {
+    // var newTransaction = {
+    //   'm_id': member['m_id'],
+    //   'name': member['name'],
+    //   'liters': liters,
+    //   'rate': rate,
+    //   'total': total,
+    // };
+    Map<String, dynamic>? lastTransaction = await DatabaseHelper.getLastTransaction();
+    int trId = 1;
+    // Initialize receipt number
+    String newReceiptNo = '001';
+
+    if (lastTransaction != null) {
+      trId  = lastTransaction['tr_id'] + 1;
+
+      String lastReceiptNo = lastTransaction['receipt_no'];
+      int receiptNumber = int.parse(lastReceiptNo) + 1;
+
+      newReceiptNo = receiptNumber.toString().padLeft(3, '0');
+    }
+
+    int pId = 0;
+    switch(member['milk_type']) {
+      case 'Cow':
+        pId = 1;
+        break;
+      case 'Buffalo':
+        pId = 2;
+        break;
+      case 'Mix':
+        pId = 3;
+        break;
+      default:
+        pId = 0;
+        break;
+    }
+    Transactions transaction = Transactions(
+      id: trId, // Assuming auto-increment ID
+      receiptNo: newReceiptNo, // Example receipt number
+      billType: '1',//1 normal 2 edited,3 void, 4 return
+      memberId: member['m_id'],
+      productId: pId,
+      productRate: rate,
+      liters: liters,
+      addOn: 0.0,
+      total: total,
+      date: DateTime.now().toIso8601String().split('T')[0], // Current date
+      time: DateTime.now().toIso8601String().split('T')[1], // Current time
+      timestamp: DateTime.now().toString(),
+      editedTimestamp: '',
+      paymentMode: '0',
+      paymentReceivedFlag: 0,
+      memberOpeningBalance: member['c_balance'],
+      voidBillFlag: 0,
+    );
+
+    await DatabaseHelper.saveTransaction(transaction);
+
+    Logger.info(transaction.toMap().toString());
+    Get.snackbar('Success', 'Transaction added successfully');
+  }
   // Initialize the controller
   @override
   Future<void> onInit() async {

@@ -21,6 +21,7 @@ class MemberWidgets {
   }) {
     return Card(
       elevation: 6,
+      color: Colors.white,
       margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
@@ -121,5 +122,22 @@ class MemberWidgets {
         ),
       ),
     );
+  }
+
+// Helper widget to display milk type icons
+  static Widget buildMilkTypeIcon(String milkType) {
+    switch (milkType) {
+      case 'Cow':
+        // return const Icon(Icons.pets, color: Colors.green); // Cow icon
+        return const Text("🐄", style: TextStyle(fontSize: 24));
+      case 'Buffalo':
+        // return const Icon(Icons.pets, color: Colors.black); // Buffalo icon
+        return const Text("🐃",style: TextStyle(fontSize: 24));
+      case 'Mix':
+        // return const Icon(Icons.pets, color: Colors.redAccent); // Mixed milk icon
+        return const Text("🐂",style: TextStyle(fontSize: 24));
+      default:
+        return const Icon(Icons.help_outline);
+    }
   }
 }

@@ -9,7 +9,8 @@ import 'package:sqflite/sqflite.dart';
 
 class SaleController extends GetxController {
   final searchController = TextEditingController();
-  final litersController = TextEditingController();
+  var liters = 0.0.obs;
+  TextEditingController litersController = TextEditingController();
   final addOnController = TextEditingController();
   final paymentController = TextEditingController();
 
@@ -20,13 +21,44 @@ class SaleController extends GetxController {
   RxList<Member> filteredMembers = <Member>[].obs; // List to hold filtered members
   final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   late Database database;
+
+  var cowMilkRate = 0.0.obs;
+  var buffaloMilkRate = 0.0.obs;
+  var mixMilkRate = 0.0.obs;
+  var transactions = <Transactions>[].obs; // Observable list of Transactions
+
+  // Method to fetch all transactions
+  Future<void> fetchTransactions() async {
+    transactions.value = await DatabaseHelper.getTransactions();
+  }
   @override
   Future<void> onInit() async {
     super.onInit();
     database = await _databaseHelper.database;
     fetchMembers(); // Load all members on initialization
+    fetchProductRatesFromDB();
+    await fetchTransactions();
   }
-
+// Fetch product rates from the database and store them in variables
+  Future<void> fetchProductRatesFromDB() async {
+    final List<Map<String, dynamic>> products = await database.query('product');
+    Logger.info(products.toString());
+    for (var product in products) {
+      switch (product['name']) {
+        case 'Cow':
+          cowMilkRate.value = product['rate'];
+          break;
+        case 'Buffalo':
+          buffaloMilkRate.value = product['rate'];
+          break;
+        case 'Mix':
+          mixMilkRate.value = product['rate'];
+          break;
+        default:
+          break;
+      }
+    }
+  }
   // Fetch all members from the database
   void fetchMembers() async {
     final List<Map<String, dynamic>> memberList = await database.query('members');
@@ -67,7 +99,7 @@ class SaleController extends GetxController {
         memberId: selectedMember.value!.id,
         productId: selectedProduct.value!.id,
         productRate: selectedProduct.value!.rate,
-        liters: double.parse(litersController.text),
+        liters: liters.value,
         addOn: double.parse(addOnController.text),
         total: calculateTotal(),
         date: DateTime.now().toIso8601String().split('T')[0], // Current date
@@ -88,9 +120,31 @@ class SaleController extends GetxController {
   }
 
   double calculateTotal() {
-    double liters = double.parse(litersController.text);
+    double liters2 = liters.value;
     double rate = selectedProduct.value!.rate;
     double addOn = double.parse(addOnController.text);
-    return liters * rate + addOn;
+    return liters2 * rate + addOn;
+  }
+
+  double getRateForMilkType(String milkType) {
+    switch (milkType) {
+      case 'Cow':
+        return cowMilkRate.value;
+      case 'Buffalo':
+        return buffaloMilkRate.value;
+      case 'Mix':
+        return mixMilkRate.value;
+      default:
+        return 0.0;
+    }
+  }
+
+  void updateLiters() {
+    liters.value = double.tryParse(litersController.text) ?? 0.0;
+  }
+  @override
+  void onClose() {
+    litersController.dispose();
+    super.onClose();
   }
 }
