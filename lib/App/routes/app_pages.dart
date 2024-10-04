@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
+import 'package:milkify/App/bindings/collection_binding.dart';
 import 'package:milkify/App/bindings/settings/rate_settings_binding.dart';
+import 'package:milkify/App/user_interface/pages/collection_page.dart';
 import 'package:milkify/App/user_interface/pages/settings/rate_settings_page.dart';
 import '../bindings/dashboard_binding.dart';
 import '../bindings/register_binding.dart';
@@ -50,6 +52,11 @@ class AppPages {
       name: AppRoutes.sale,
       page: () => SalePage(),
       binding: SaleBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.collection,
+      page: () => CollectionPage(),
+      binding: CollectionBinding(),
     ),
     GetPage(
       name: AppRoutes.report,

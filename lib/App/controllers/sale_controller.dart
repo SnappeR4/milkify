@@ -89,35 +89,21 @@ class SaleController extends GetxController {
     });
   }
 
-  // Function to save a transaction
-  void saveTransaction() async {
-    if (selectedMember.value != null && selectedProduct.value != null) {
-      Transactions transaction = Transactions(
-        id: 0, // Assuming auto-increment ID
-        receiptNo: '001', // Example receipt number
-        billType: 'Normal',
-        memberId: selectedMember.value!.id,
-        productId: selectedProduct.value!.id,
-        productRate: selectedProduct.value!.rate,
-        liters: liters.value,
-        addOn: double.parse(addOnController.text),
-        total: calculateTotal(),
-        date: DateTime.now().toIso8601String().split('T')[0], // Current date
-        time: DateTime.now().toIso8601String().split('T')[1], // Current time
-        timestamp: DateTime.now().toString(),
-        editedTimestamp: '',
-        paymentMode: 'Cash',
-        paymentReceivedFlag: 1,
-        memberOpeningBalance: selectedMember.value!.currentBalance,
-        voidBillFlag: 0,
-      );
+  void updateTransaction(String receiptNo, String date, double newLiters, double productRate) async {
+    // Calculate the new total
+    double updatedTotal = newLiters * productRate;
 
-      await DatabaseHelper.saveTransaction(transaction);
-      Get.snackbar('Success', 'Transaction saved successfully.');
+    // Update the transaction in the database
+    int result = await DatabaseHelper.updateTransaction(receiptNo, date, newLiters, updatedTotal);
+
+    if (result > 0) {
+      await fetchTransactions();
+      Logger.info('update was successful, fetch the updated transactions');
     } else {
-      Get.snackbar('Error', 'Please select a member and product.');
+      Logger.info('Failed to update transaction');
     }
   }
+
 
   double calculateTotal() {
     double liters2 = liters.value;

@@ -12,6 +12,8 @@ class ProfileSettingsPage extends StatelessWidget {
   // Image Picker instance
   final ImagePicker _picker = ImagePicker();
 
+  ProfileSettingsPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

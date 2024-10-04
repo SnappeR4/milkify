@@ -123,7 +123,7 @@ class EditMemberPage extends StatelessWidget {
           );
         }).toList(),
         decoration: InputDecoration(
-          labelText: label + ' *', // Mark milk type as mandatory
+          labelText: '$label *', // Mark milk type as mandatory
           border: const OutlineInputBorder(),
         ),
         onChanged: (value) {
@@ -146,7 +146,7 @@ class EditMemberPage extends StatelessWidget {
           border: const OutlineInputBorder(),
         ),
         keyboardType: (label == 'Recently Paid' || label == 'Current Balance' || label == 'Liters of Milk')
-            ? TextInputType.numberWithOptions(decimal: true)
+            ? const TextInputType.numberWithOptions(decimal: true)
             : TextInputType.text,
       ),
     );

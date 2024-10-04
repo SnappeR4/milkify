@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:milkify/App/controllers/collection_controller.dart';
+import 'package:milkify/App/controllers/settings/member_settings_controller.dart';
 
 import '../controllers/dashboard_controller.dart';
 import '../controllers/report_controller.dart';
@@ -12,5 +14,7 @@ class DashboardBinding extends Bindings {
     Get.lazyPut<ReportController>(() => ReportController());
     Get.lazyPut<SaleController>(() => SaleController());
     Get.lazyPut<SettingsController>(() => SettingsController());
+    Get.lazyPut<CollectionController>(() => CollectionController());
+    Get.lazyPut<MemberController>(() => MemberController());
   }
 }

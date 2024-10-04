@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:milkify/App/controllers/collection_controller.dart';
 import 'package:milkify/App/controllers/sale_controller.dart';
 import 'package:milkify/App/data/models/transaction.dart';
 import 'package:sqflite/sqflite.dart';
@@ -30,16 +31,32 @@ class MemberController extends GetxController {
 
   //for sale page
   var isMemberSelected = false.obs;
+  //for payment page
+  var isMemberSelectedPayment = false.obs;
   final RxMap<String, dynamic> selectedMember = <String, dynamic>{}.obs;
   final SaleController saleController = Get.find<SaleController>();
+  final CollectionController collectionController = Get.find<CollectionController>();
   // Method to select a member
   void selectMember(Map<String, dynamic> member) {
     selectedMember.assignAll(member);
     isMemberSelected.value = true;
     saleController.fetchTransactions();
   }
-  void setMemberSelected(bool selected) {
+  Future<void> setMemberSelected(bool selected) async {
+    final List<Map<String, dynamic>> memberList = await database.query('members');
+    filteredMembers.assignAll(memberList);
     isMemberSelected.value = selected;
+  }
+  //for payment page
+  void selectMemberPayment(Map<String, dynamic> member) {
+    selectedMember.assignAll(member);
+    isMemberSelectedPayment.value = true;
+    collectionController.fetchPayments(member['m_id']);
+  }
+  Future<void> setMemberSelectedPayment(bool selected) async {
+    final List<Map<String, dynamic>> memberList = await database.query('members');
+    filteredMembers.assignAll(memberList);
+    isMemberSelectedPayment.value = selected;
   }
   // Method to edit a member
   Future<void> editMember(Map<String, dynamic> member) async {
@@ -58,7 +75,10 @@ class MemberController extends GetxController {
     members.assignAll(memberList);
     searchMembers(searchQuery.value); // Apply the search if any
   }
-
+  Future<void> syncMembers() async {
+    final List<Map<String, dynamic>> memberList = await database.query('members');
+    filteredMembers.assignAll(memberList);
+  }
   void searchMembers(String query) {
     searchQuery.value = query;
 
@@ -171,7 +191,7 @@ class MemberController extends GetxController {
     );
 
     await DatabaseHelper.saveTransaction(transaction);
-
+    fetchMembers();
     Logger.info(transaction.toMap().toString());
     Get.snackbar('Success', 'Transaction added successfully');
   }

@@ -47,6 +47,7 @@ class BackupRestoreController extends GetxController {
     // Ask for user confirmation before proceeding
     final bool confirmed = await Get.dialog<bool>(
       AlertDialog(
+        backgroundColor: Colors.white,
         title: const Text('Confirm Restore'),
         content: const Text('Are you sure you want to restore the database? This will replace the current database.'),
         actions: [

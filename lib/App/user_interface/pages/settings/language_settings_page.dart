@@ -5,6 +5,8 @@ import 'package:milkify/App/controllers/settings/language_settings_controller.da
 class LanguageSettingsPage extends StatelessWidget {
   final LanguageSettingsController controller = Get.find<LanguageSettingsController>();
 
+  LanguageSettingsPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,20 +23,20 @@ class LanguageSettingsPage extends StatelessWidget {
             children: [
               Text(
                 'select_language'.tr, // Translation key for 'Select Language'
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
 
               // Use Obx to listen to changes in selectedLanguage
               Obx(() {
                 if (controller.selectedLanguage.value.isEmpty) {
                   // If language is not loaded yet, show a loading indicator
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 return Container(
-                  padding: EdgeInsets.symmetric(vertical: 8),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey.shade400),
                     borderRadius: BorderRadius.circular(8),
@@ -43,15 +45,15 @@ class LanguageSettingsPage extends StatelessWidget {
                         color: Colors.grey.withOpacity(0.2),
                         spreadRadius: 2,
                         blurRadius: 5,
-                        offset: Offset(0, 3),
+                        offset: const Offset(0, 3),
                       ),
                     ],
                   ),
                   child: DropdownButton<String>(
                     value: controller.selectedLanguage.value, // Bind the value to selectedLanguage
                     isExpanded: true,
-                    underline: SizedBox(),
-                    items: [
+                    underline: const SizedBox(),
+                    items: const [
                       DropdownMenuItem(
                         alignment: AlignmentDirectional.center,
                         value: 'en',
@@ -76,7 +78,7 @@ class LanguageSettingsPage extends StatelessWidget {
                     },
                     hint: Text(
                       'select_language'.tr, // Hint text
-                      style: TextStyle(color: Colors.grey),
+                      style: const TextStyle(color: Colors.grey),
                     ),
                   ),
                 );

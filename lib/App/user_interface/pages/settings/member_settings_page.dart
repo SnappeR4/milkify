@@ -7,6 +7,8 @@ import 'package:milkify/App/user_interface/widgets/member_widgets.dart';
 class MemberListPage extends StatelessWidget {
   final controller = Get.find<MemberController>();
 
+  MemberListPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,6 +80,7 @@ class MemberListPage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: const Text('Delete Member'),
           content: Text('Are you sure you want to delete ${member['name']}?'),
           actions: [

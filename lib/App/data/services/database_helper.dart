@@ -1,4 +1,3 @@
-import 'package:milkify/App/data/models/member.dart';
 import 'package:milkify/App/data/models/product.dart';
 import 'package:milkify/App/data/models/profile_model.dart';
 import 'package:milkify/App/data/models/transaction.dart';
@@ -63,7 +62,7 @@ class DatabaseHelper {
         paid_amount REAL,
         current_balance REAL,
         date TEXT,
-        time TEXT
+        time TEXT 
       )
     ''');
 
@@ -188,8 +187,15 @@ class DatabaseHelper {
 
   // Insert a transaction
   static Future<void> saveTransaction(Transactions transaction) async {
+    // Insert transaction into the transactions table
     await _database!.insert('transactions', transaction.toMap());
+
+    // Update the member's c_balance by subtracting the transaction's total amount
+    await _database!.execute('''
+    UPDATE members SET c_balance = c_balance - ? WHERE m_id = ?
+  ''', [transaction.total, transaction.memberId]);
   }
+
   static Future<Map<String, dynamic>?> getLastTransaction() async {
     // Query to get the last transaction based on the highest id
     final List<Map<String, dynamic>> result = await _database!.query(
@@ -215,6 +221,56 @@ class DatabaseHelper {
       return Transactions.fromMap(transactionMap);
     }).toList();
   }
+
+  // static Future<int> updateTransaction(String receiptNo, String date, double liters, double total) async {
+  //   return await _database!.update(
+  //     'transactions',
+  //     {
+  //       'liters': liters,
+  //       'total': total,
+  //     },
+  //     where: 'receipt_no = ? AND date = ?',
+  //     whereArgs: [receiptNo, date],
+  //   );
+  // }
+
+  static Future<int> updateTransaction(String receiptNo, String date, double liters, double total) async {
+    // Fetch the original transaction amount
+    List<Map<String, dynamic>> originalTransaction = await _database!.query(
+      'transactions',
+      columns: ['total', 'm_id'],
+      where: 'receipt_no = ? AND date = ?',
+      whereArgs: [receiptNo, date],
+    );
+
+    if (originalTransaction.isNotEmpty) {
+      double oldTotal = originalTransaction.first['total'];
+      int mId = originalTransaction.first['m_id'];
+
+      // Update the transaction in the transactions table
+      int result = await _database!.update(
+        'transactions',
+        {
+          'liters': liters,
+          'total': total,
+        },
+        where: 'receipt_no = ? AND date = ?',
+        whereArgs: [receiptNo, date],
+      );
+
+      // Adjust the member's c_balance based on the difference between old and new total
+      double difference = oldTotal - total;
+      await _database!.execute('''
+      UPDATE members SET c_balance = c_balance + ? WHERE m_id = ?
+    ''', [difference, mId]);
+
+      return result;
+    } else {
+      // Handle the case where the transaction doesn't exist (return an error code, etc.)
+      return 0;
+    }
+  }
+
 // Add methods to interact with the database
 // For example, insert, update, delete operations.
 //demo access in controllers

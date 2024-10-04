@@ -5,7 +5,7 @@ import '../../utils/logger.dart';
 class PrinterSettingsController extends GetxController {
   var isReceiptPrintOn = false.obs;
   var selectedPrinter = ''.obs;
-  final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
+  // final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
 
   @override
   Future<void> onInit() async {
@@ -17,7 +17,7 @@ class PrinterSettingsController extends GetxController {
     try {
       final settings = await DatabaseHelper.getSettings();
 
-      if (settings != null && settings.isNotEmpty) {
+      if (settings.isNotEmpty) {
         // Safely access the properties with null checks
         isReceiptPrintOn.value = settings['receipt_print'] == "true";
         selectedPrinter.value = settings['bluetooth_printer_name'] as String;

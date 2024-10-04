@@ -1,16 +1,12 @@
 // lib/app/pages/settings_page.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/settings_controller.dart';
 import '../../routes/app_routes.dart';
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Initialize the SettingsController
-    final SettingsController controller = Get.find();
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(

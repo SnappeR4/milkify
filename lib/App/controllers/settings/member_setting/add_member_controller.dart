@@ -15,7 +15,7 @@ class AddMemberController extends GetxController {
   // Add a new member
   Future<void> addMember(Map<String, dynamic> memberData) async {
     try {
-      await memberSettingsController.addMember(memberData); // Call the method from MemberSettingsController
+      await memberSettingsController.addMember(memberData);
       Get.snackbar('Success', 'Member added successfully');
     } catch (e) {
       Logger.error('Failed to add member: $e');

@@ -5,6 +5,8 @@ import 'package:milkify/App/controllers/settings/rate_settings_controller.dart';
 class RateSettingPage extends StatelessWidget {
   final RateSettingController rateController = Get.find<RateSettingController>();
 
+  RateSettingPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +57,6 @@ class RateSettingPage extends StatelessWidget {
                               double newRate = double.tryParse(rateControllerField.text) ?? 0.0;
                               rateController.updateRate(product.id, newRate);
 
-                              // Show snackbar on update
                               Get.snackbar(
                                 'Rate Updated',
                                 '${product.name} rate updated to $newRate',

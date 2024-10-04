@@ -20,7 +20,7 @@ class AddMemberPage extends StatelessWidget {
 
   // Dropdown values for milk type
   final List<String> milkTypes = ['Cow', 'Buffalo', 'Mix'];
-  String selectedMilkType = 'Cow'; // Default selected value
+  String selectedMilkType = 'Cow';
 
   // GlobalKey to reference the form
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -59,7 +59,7 @@ class AddMemberPage extends StatelessWidget {
   }
 
   // Function to save a new member
-  void _saveMember() {
+  Future<void> _saveMember() async {
     if (_formKey.currentState!.validate()) {
       // Prepare member data
       Map<String, dynamic> newMember = {
@@ -74,7 +74,7 @@ class AddMemberPage extends StatelessWidget {
       };
       Logger.info(newMember.toString());
       controller.addMember(newMember); // Use the AddMemberController
-
+      await Future.delayed(const Duration(seconds: 1));
       Get.back(); // Go back after saving
     }
   }
@@ -90,7 +90,7 @@ class AddMemberPage extends StatelessWidget {
           labelText: label + (isMandatory ? ' *' : ''),
           border: const OutlineInputBorder(),
         ),
-        keyboardType: isNumeric ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+        keyboardType: isNumeric ? const TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
         maxLength: maxLength,
         validator: (value) {
           if (isMandatory && (value == null || value.isEmpty)) {
@@ -141,9 +141,9 @@ class AddMemberPage extends StatelessWidget {
         onChanged: (String? newValue) {
           selectedMilkType = newValue!;
         },
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           labelText: 'Milk Type (cow, buffalo, mix) *',
-          border: const OutlineInputBorder(),
+          border: OutlineInputBorder(),
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {

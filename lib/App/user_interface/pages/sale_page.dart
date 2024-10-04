@@ -8,8 +8,10 @@ import 'package:milkify/App/user_interface/widgets/member_widgets.dart';
 import 'package:milkify/App/utils/logger.dart';
 
 class SalePage extends StatelessWidget {
-  final MemberController controller = Get.put(MemberController());
+  final MemberController controller = Get.find<MemberController>();
   final SaleController saleController = Get.find<SaleController>();
+
+  SalePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -250,6 +252,9 @@ class SalePage extends StatelessWidget {
                         title: Text('Receipt No: ${transaction.receiptNo}'),
                         subtitle: Text('Liters: ${transaction.liters} | Rate: ₹${transaction.productRate}'),
                         trailing: Text('₹${transaction.total.toStringAsFixed(2)}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+                        onTap: (){
+                          _showEditTransactionDialog(context,transaction);
+                        },
                       );
                     },
                   )
@@ -274,7 +279,7 @@ class SalePage extends StatelessWidget {
                   // ),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         double liters = saleController.liters.value;
                         if (liters == 0.0 || rate == 0.0) {
                           // Show error if input is invalid
@@ -284,6 +289,7 @@ class SalePage extends StatelessWidget {
                         }
                         double total = liters * rate;
                         controller.submitTransaction(selectedMember, liters, rate, total);
+                        await Future.delayed(const Duration(seconds: 1));
                         Logger.info('Transaction submitted');
                         controller.setMemberSelected(false);
                       },
@@ -299,11 +305,77 @@ class SalePage extends StatelessWidget {
     ));
   }
 
+  // Show a popup dialog when a transaction is tapped
+  void _showEditTransactionDialog(BuildContext context, Transactions transaction) {
+    TextEditingController litersController = TextEditingController(text: transaction.liters.toString());
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text('Edit Transaction - ${transaction.receiptNo}'),
+          content: TextField(
+            controller: litersController,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(labelText: 'Liters'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Get the new liters value
+                double newLiters = double.tryParse(litersController.text) ?? 0.0;
+
+                // Validate that the entered liters are greater than 0
+                if (newLiters <= 0) {
+                  // Show an error message if the liters are not valid
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      backgroundColor: Colors.white,
+                      title: const Text('Invalid Input'),
+                      content: const Text('Liters must be greater than 0.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context); // Close the error dialog
+                          },
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                } else {
+                  // Assuming you have a way to get the product rate (e.g., stored in a variable)
+                  double productRate = transaction.productRate;
+
+                  // Call the update method to update the transaction in the database
+                  saleController.updateTransaction(transaction.receiptNo, transaction.date, newLiters, productRate);
+
+                  Navigator.pop(context); // Close the dialog
+                }
+              },
+              child: const Text('Update'),
+            ),
+
+          ],
+        );
+      },
+    );
+  }
+
   void _confirmDelete(BuildContext context, Map<String, dynamic> member) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: const Text('Delete Member'),
           content: Text('Are you sure you want to delete ${member['name']}?'),
           actions: [

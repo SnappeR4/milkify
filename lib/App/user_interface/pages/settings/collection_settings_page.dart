@@ -2,10 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controllers/settings/collection_settings_controller.dart';
-import '../../../routes/app_routes.dart';
 
 class CollectionSettingsPage extends StatelessWidget {
   final CollectionSettingsController controller = Get.find<CollectionSettingsController>();
+
+  CollectionSettingsPage({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +14,7 @@ class CollectionSettingsPage extends StatelessWidget {
         title: const Text('Settings'),
       ),
       body: Obx(() {
-        final settings = controller.settings.value;
+        final settings = controller.settings;
 
         return ListView(
           padding: const EdgeInsets.all(16.0),

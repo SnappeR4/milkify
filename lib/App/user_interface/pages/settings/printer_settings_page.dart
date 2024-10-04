@@ -6,6 +6,8 @@ import '../../themes/app_theme.dart';
 class PrinterSettingsPage extends StatelessWidget {
   final PrinterSettingsController controller = Get.find<PrinterSettingsController>();
 
+  PrinterSettingsPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,10 +75,11 @@ class PrinterSettingsPage extends StatelessWidget {
                       ElevatedButton(
                       onPressed: () async {
                         //method to connect
-                        if(controller.selectedPrinter.value.isNotEmpty)
+                        if(controller.selectedPrinter.value.isNotEmpty) {
                           Get.snackbar('Connected', 'Printer connected');
+                        }
                       },
-                      child: Text('Connect'),
+                      child: const Text('Connect'),
                     ),
                     ]
                   ),

@@ -9,6 +9,8 @@ import 'package:path/path.dart';
 class BackupRestorePage extends StatelessWidget {
   final BackupRestoreController controller = Get.find<BackupRestoreController>();
 
+  BackupRestorePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
