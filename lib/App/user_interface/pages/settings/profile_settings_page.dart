@@ -70,6 +70,7 @@ class ProfileSettingsPage extends StatelessWidget {
                     brandNameController.text,
                     mobileNumberController.text,
                   );
+                  Get.back();
                 },
                 child: Text(profileController.isEditing.value ? 'Update Profile' : 'Save Profile'),
               ),

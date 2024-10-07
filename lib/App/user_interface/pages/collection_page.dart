@@ -70,17 +70,17 @@ class CollectionPage extends StatelessWidget {
   }
 
   Widget _buildSelectedMemberPaymentDetails() {
-    final selectedMember = memberController.selectedMember;
-    Logger.info(selectedMember.toString());
+    final selectedMemberPayment = memberController.selectedMemberPayment;
+    Logger.info(selectedMemberPayment.toString());
     collectionController.amountController = TextEditingController(text: "0.0");
-    final remainingAmount = selectedMember['c_balance'];
+    final remainingAmount = selectedMemberPayment['c_balance'];
 
     final List<MemberPayment> paymentTransactions = collectionController.payments.isNotEmpty
         ? collectionController.payments
         : [
       // MemberPayment(
       //   billNo: 1,
-      //   memberId: selectedMember['m_id'],
+      //   memberId: selectedMemberPayment['m_id'],
       //   paidAmount: 500.0,
       //   currentBalance: 1000.0,
       //   date: DateTime.now().toIso8601String().split('T')[0],
@@ -88,7 +88,7 @@ class CollectionPage extends StatelessWidget {
       // ),
       // MemberPayment(
       //   billNo: 2,
-      //   memberId: selectedMember['m_id'],
+      //   memberId: selectedMemberPayment['m_id'],
       //   paidAmount: 300.0,
       //   currentBalance: 700.0,
       //   date: DateTime.now().toIso8601String().split('T')[0],
@@ -125,9 +125,9 @@ class CollectionPage extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('ID: ${selectedMember['m_id']}', style: const TextStyle(fontWeight: FontWeight.bold)),
-                Text('Name: ${selectedMember['name']}'),
-                Text('Phone: ${selectedMember['mobile_number']}'), // Assuming phone field exists
+                Text('ID: ${selectedMemberPayment['m_id']}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text('Name: ${selectedMemberPayment['name']}'),
+                Text('Phone: ${selectedMemberPayment['mobile_number']}'), // Assuming phone field exists
               ],
             ),
             const Divider(),
@@ -182,9 +182,9 @@ class CollectionPage extends StatelessWidget {
 
                     // Save payment transaction
                     collectionController.savePayment(
-                      memberId: selectedMember['m_id'],
+                      memberId: selectedMemberPayment['m_id'],
                       paidAmount: paidAmount,
-                      currentBalance: selectedMember['c_balance'],
+                      currentBalance: selectedMemberPayment['c_balance'],
                     );
 
                     Logger.info('Payment transaction submitted');

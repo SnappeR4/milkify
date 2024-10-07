@@ -29,7 +29,9 @@ class RateSettingPage extends StatelessWidget {
               );
 
               return Card(
-                margin: const EdgeInsets.symmetric(vertical: 10),
+                color: Colors.white,
+                // margin: const EdgeInsets.symmetric(vertical: 10),
+                elevation: 5,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(

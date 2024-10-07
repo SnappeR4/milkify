@@ -106,7 +106,6 @@ class EditMemberPage extends StatelessWidget {
 
     // Update the member in the controller
     memberSettingsController.editMember(updatedMember);
-
     Get.back(); // Go back after updating
   }
 

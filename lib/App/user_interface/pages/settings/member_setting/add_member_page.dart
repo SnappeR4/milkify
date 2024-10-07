@@ -14,9 +14,8 @@ class AddMemberPage extends StatelessWidget {
   final TextEditingController memberNameController = TextEditingController();
   final TextEditingController mobileNumberController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
-  // final TextEditingController recentlyPaidController = TextEditingController();
   final TextEditingController currentBalanceController = TextEditingController(text: '0.00');
-  final TextEditingController litersController = TextEditingController(text: '0.00');
+  final TextEditingController litersController = TextEditingController(text: '0.0');
 
   // Dropdown values for milk type
   final List<String> milkTypes = ['Cow', 'Buffalo', 'Mix'];
@@ -74,7 +73,6 @@ class AddMemberPage extends StatelessWidget {
       };
       Logger.info(newMember.toString());
       controller.addMember(newMember); // Use the AddMemberController
-      await Future.delayed(const Duration(seconds: 1));
       Get.back(); // Go back after saving
     }
   }

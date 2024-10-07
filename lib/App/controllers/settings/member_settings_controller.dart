@@ -34,6 +34,7 @@ class MemberController extends GetxController {
   //for payment page
   var isMemberSelectedPayment = false.obs;
   final RxMap<String, dynamic> selectedMember = <String, dynamic>{}.obs;
+  final RxMap<String, dynamic> selectedMemberPayment = <String, dynamic>{}.obs;
   final SaleController saleController = Get.find<SaleController>();
   final CollectionController collectionController = Get.find<CollectionController>();
   // Method to select a member
@@ -49,7 +50,7 @@ class MemberController extends GetxController {
   }
   //for payment page
   void selectMemberPayment(Map<String, dynamic> member) {
-    selectedMember.assignAll(member);
+    selectedMemberPayment.assignAll(member);
     isMemberSelectedPayment.value = true;
     collectionController.fetchPayments(member['m_id']);
   }
@@ -108,7 +109,7 @@ class MemberController extends GetxController {
   }
 
   // Delete a member from the database
-  Future<void> deleteMember(String memberId) async {
+  Future<void> deleteMember(int memberId) async {
     await database.delete(
       'members',
       where: 'm_id = ?',
@@ -200,6 +201,6 @@ class MemberController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     database = await _dbHelper.database;
-    fetchMembers(); // Fetch members when the controller is initialized
+    fetchMembers();
   }
 }

@@ -40,11 +40,10 @@ class ProfileSettingsController extends GetxController {
 
     if (isEditing.value) {
       await dbHelper.updateProfile(newProfile);
+      Get.snackbar("Profile", "Updated Successfully");
     } else {
       await dbHelper.insertProfile(newProfile);
     }
     profile.value = newProfile;
-    Get.snackbar("Profile", "Updated Successfully");
-    Get.offAndToNamed(AppRoutes.settings); // Navigate back to the previous screen
   }
 }

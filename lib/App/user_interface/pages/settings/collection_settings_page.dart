@@ -26,20 +26,20 @@ class CollectionSettingsPage extends StatelessWidget {
                 controller.updateSetting('sms_enable', value ? 1 : 0);
               },
             ),
-            SwitchListTile(
-              title: const Text('Payment Flag'),
-              value: settings['payment_flag'] == 1,
-              onChanged: (value) {
-                controller.updateSetting('payment_flag', value ? 1 : 0);
-              },
-            ),
-            SwitchListTile(
-              title: const Text('Add-On Flag'),
-              value: settings['add_on_flag'] == 1,
-              onChanged: (value) {
-                controller.updateSetting('add_on_flag', value ? 1 : 0);
-              },
-            ),
+            // SwitchListTile(
+            //   title: const Text('Payment Flag'),
+            //   value: settings['payment_flag'] == 1,
+            //   onChanged: (value) {
+            //     controller.updateSetting('payment_flag', value ? 1 : 0);
+            //   },
+            // ),
+            // SwitchListTile(
+            //   title: const Text('Add-On Flag'),
+            //   value: settings['add_on_flag'] == 1,
+            //   onChanged: (value) {
+            //     controller.updateSetting('add_on_flag', value ? 1 : 0);
+            //   },
+            // ),
           ],
         );
       }),
