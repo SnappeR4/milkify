@@ -6,10 +6,35 @@ import 'package:sqflite/sqflite.dart';
 class ReportController extends GetxController {
   final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   late Database database;
+// Reactive variables for data fetching
+  var sumLiters = '0'.obs;
+  var sumTotal = '0'.obs;
+  var recordCount = '0'.obs;
+  var sumPaidAmount = '0'.obs;
+  var totalMembers = '0'.obs;
+  var totalLiters = '0'.obs;
+  var editedCount = '0'.obs;
+  var deletedCount = '0'.obs;
+
   @override
   Future<void> onInit() async {
     super.onInit();
     database = await _databaseHelper.database;
+
+    // Load all the reports' data on initialization
+    fetchReportData();
+  }
+
+  // Fetch all report data
+  void fetchReportData() async {
+    sumLiters.value = await getCurrentDateSumLiters();
+    sumTotal.value = await getCurrentDateSumTotal();
+    recordCount.value = await getCurrentDateRecordCount();
+    sumPaidAmount.value = await getCurrentDateSumPaidAmount();
+    totalMembers.value = await getTotalMemberCount();
+    totalLiters.value = await getTotalLitersForMembers();
+    editedCount.value = await getEditedBillCount();
+    deletedCount.value = await getDeletedBillCount();
   }
 
   // Get the current date
@@ -54,7 +79,6 @@ class ReportController extends GetxController {
     return recordCount.toString();
   }
 
-  // Get the sum of paid_amount for the current date from member_payment table
   Future<String> getCurrentDateSumPaidAmount() async {
     final String currentDate = getCurrentDate();
     final List<Map<String, dynamic>> result = await database.rawQuery('''
@@ -66,7 +90,6 @@ class ReportController extends GetxController {
     return sumPaidAmount.toString();
   }
 
-  // Get the total count of members from the members table
   Future<String> getTotalMemberCount() async {
     final List<Map<String, dynamic>> result = await database.rawQuery('''
       SELECT COUNT(*) AS member_count FROM members

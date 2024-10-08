@@ -53,7 +53,7 @@ class ReportTableWidget extends StatelessWidget {
             children: [
               ElevatedButton(
                 onPressed: onPressed,
-                child: const Text('CUSTOM DATE'),
+                child: const Text('CUSTOM'),
               ),
             ],
           ),

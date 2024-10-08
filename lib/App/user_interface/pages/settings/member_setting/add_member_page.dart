@@ -4,21 +4,28 @@ import '../../../../controllers/settings/member_setting/add_member_controller.da
 import '../../../../controllers/settings/member_settings_controller.dart';
 import '../../../../utils/logger.dart';
 
+// ignore: must_be_immutable
 class AddMemberPage extends StatelessWidget {
   AddMemberPage({super.key});
 
   final AddMemberController controller = Get.put(AddMemberController());
+
   final MemberController memberSettingsController = Get.find<MemberController>();
 
   // Text controllers to capture user input
   final TextEditingController memberNameController = TextEditingController();
+
   final TextEditingController mobileNumberController = TextEditingController();
+
   final TextEditingController addressController = TextEditingController();
+
   final TextEditingController currentBalanceController = TextEditingController(text: '0.00');
+
   final TextEditingController litersController = TextEditingController(text: '0.0');
 
   // Dropdown values for milk type
   final List<String> milkTypes = ['Cow', 'Buffalo', 'Mix'];
+
   String selectedMilkType = 'Cow';
 
   // GlobalKey to reference the form

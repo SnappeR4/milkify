@@ -85,58 +85,15 @@ class SalePage extends StatelessWidget {
   }
 
   Widget _buildSelectedMemberDetails() {
+    saleController.fetchProductRatesFromDB();
     final selectedMember = controller.selectedMember;
     Logger.info(selectedMember.toString());
     saleController.liters.value = selectedMember['liters'];
     saleController.litersController = TextEditingController(text: selectedMember['liters'].toString());
     final double rate = saleController.getRateForMilkType(selectedMember['milk_type']); // Fetch rate
-
-// Use the transactions from the controller or fallback to default demo data
     final List<Transactions> transactions = saleController.transactions.isNotEmpty
         ? saleController.transactions
-        : [
-      Transactions(
-        id: 0,
-        receiptNo: '001',
-        billType: '1',
-        memberId: 1,
-        productId: 1,
-        productRate: 40.0,
-        liters: 5.0,
-        addOn: 0.0,
-        total: 200.0,
-        date: DateTime.now().toIso8601String().split('T')[0],
-        time: DateTime.now().toIso8601String().split('T')[1],
-        timestamp: DateTime.now().toString(),
-        editedTimestamp: '',
-        paymentMode: '0',
-        paymentReceivedFlag: 0,
-        memberOpeningBalance: 100.0,
-        voidBillFlag: 0,
-      ),
-      Transactions(
-        id: 0,
-        receiptNo: '002',
-        billType: '1',
-        memberId: 2,
-        productId: 1,
-        productRate: 50.0,
-        liters: 7.0,
-        addOn: 0.0,
-        total: 350.0,
-        date: DateTime.now().toIso8601String().split('T')[0],
-        time: DateTime.now().toIso8601String().split('T')[1],
-        timestamp: DateTime.now().toString(),
-        editedTimestamp: '',
-        paymentMode: '0',
-        paymentReceivedFlag: 0,
-        memberOpeningBalance: 150.0,
-        voidBillFlag: 0,
-      ),
-    ];
-// final transactions =[
-//   {'name': 'John Doe', 'm_id': '001', 'liters': 5.0, 'rate': 40.0},
-//       {'name': 'Jane Smith', 'm_id': '002', 'liters': 7.0, 'rate': 50.0},];
+        : [];
 
     return Container(
       padding: const EdgeInsets.all(16.0),
@@ -308,7 +265,8 @@ class SalePage extends StatelessWidget {
   // Show a popup dialog when a transaction is tapped
   void _showEditTransactionDialog(BuildContext context, Transactions transaction) {
     TextEditingController litersController = TextEditingController(text: transaction.liters.toString());
-
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
     showDialog(
       context: context,
       builder: (context) {
@@ -321,6 +279,14 @@ class SalePage extends StatelessWidget {
             decoration: const InputDecoration(labelText: 'Liters'),
           ),
           actions: [
+            TextButton(
+              onPressed: () {
+                SaleController.deleteTransaction(transaction.receiptNo, transaction.date,formatter.format(now));
+                saleController.fetchTransactions();
+                Navigator.pop(context); // Close the dialog
+              },
+              child: const Text('Delete', style: TextStyle(color: Colors.redAccent)),
+            ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Close the dialog
@@ -356,7 +322,7 @@ class SalePage extends StatelessWidget {
                   double productRate = transaction.productRate;
 
                   // Call the update method to update the transaction in the database
-                  saleController.updateTransaction(transaction.receiptNo, transaction.date, newLiters, productRate);
+                  saleController.updateTransaction(transaction.receiptNo, transaction.date, newLiters, productRate,formatter.format(now));
 
                   Navigator.pop(context); // Close the dialog
                 }

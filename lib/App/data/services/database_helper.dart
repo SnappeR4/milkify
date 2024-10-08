@@ -213,16 +213,19 @@ class DatabaseHelper {
   static Future<List<Transactions>> getTransactions() async {
     final List<Map<String, dynamic>> rawTransactions = await _database!.query(
       'transactions',
+      where: 'bill_type != ? AND void_bill_flag = ?',
+      whereArgs: [3, 0], // Exclude bill_type 3 and void_bill_flag 0
       orderBy: 'tr_id DESC',
       limit: 2,
     );
+
     // Convert to List<Transactions>
     return rawTransactions.map((transactionMap) {
       return Transactions.fromMap(transactionMap);
     }).toList();
   }
 
-  static Future<int> updateTransaction(String receiptNo, String date, double liters, double total) async {
+  static Future<int> updateTransaction(String receiptNo, String date, double liters, double total, String editedTimestamp) async {
     // Fetch the original transaction amount
     List<Map<String, dynamic>> originalTransaction = await _database!.query(
       'transactions',
@@ -241,8 +244,10 @@ class DatabaseHelper {
         {
           'liters': liters,
           'total': total,
+          'bill_type' : '2',
+          'edited_timestamp' : editedTimestamp
         },
-        where: 'receipt_no = ? AND date = ? AND bill_type = 2',
+        where: 'receipt_no = ? AND date = ?',
         whereArgs: [receiptNo, date],
       );
 
@@ -258,7 +263,18 @@ class DatabaseHelper {
       return 0;
     }
   }
-
+  static Future<int> deleteTransaction(String receiptNo, String date, String editedTimestamp) async {
+    // Update the bill_type to 3 and set the edited_timestamp
+    return await _database!.update(
+      'transactions',
+      {
+        'bill_type': 3,
+        'edited_timestamp': editedTimestamp,
+      },
+      where: 'receipt_no = ? AND date = ?',
+      whereArgs: [receiptNo, date],
+    );
+  }
 // Add methods to interact with the database
 // For example, insert, update, delete operations.
 //demo access in controllers

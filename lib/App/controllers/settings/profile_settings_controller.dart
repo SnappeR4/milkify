@@ -3,7 +3,7 @@ import 'dart:io'; // for File handling
 import 'package:get/get.dart';
 import 'package:milkify/App/data/models/profile_model.dart';
 import 'package:milkify/App/data/services/database_helper.dart';
-import 'package:milkify/App/routes/app_routes.dart';
+
 class ProfileSettingsController extends GetxController {
   var profile = Profile().obs;
   var profileImage = Rxn<File>(); // To hold the profile image

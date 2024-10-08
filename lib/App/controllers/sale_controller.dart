@@ -89,12 +89,12 @@ class SaleController extends GetxController {
     });
   }
 
-  void updateTransaction(String receiptNo, String date, double newLiters, double productRate) async {
+  void updateTransaction(String receiptNo, String date, double newLiters, double productRate, String edited_timestamp) async {
     // Calculate the new total
     double updatedTotal = newLiters * productRate;
 
     // Update the transaction in the database
-    int result = await DatabaseHelper.updateTransaction(receiptNo, date, newLiters, updatedTotal);
+    int result = await DatabaseHelper.updateTransaction(receiptNo, date, newLiters, updatedTotal,edited_timestamp);
 
     if (result > 0) {
       await fetchTransactions();
@@ -104,6 +104,9 @@ class SaleController extends GetxController {
     }
   }
 
+  static Future<int> deleteTransaction(String receiptNo, String date, String editedTimestamp) async {
+    return await DatabaseHelper.deleteTransaction(receiptNo, date, editedTimestamp);
+  }
 
   double calculateTotal() {
     double liters2 = liters.value;
