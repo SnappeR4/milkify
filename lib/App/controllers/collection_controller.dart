@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:milkify/App/controllers/sms_controller.dart';
 import 'package:milkify/App/data/models/member_payment.dart';
 import 'package:milkify/App/data/services/database_helper.dart';
 import 'package:milkify/App/utils/logger.dart';
@@ -10,17 +11,22 @@ class CollectionController extends GetxController {
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
   late Database database;
   var payments = <MemberPayment>[].obs;
-
+  final SmsController smsController = Get.put(SmsController());
+  RxMap<String, Object?> settings = <String, Object?>{}.obs;
   @override
   Future<void> onInit() async {
     super.onInit();
     database = await _dbHelper.database;
+    loadSettings();
   }
-
+  Future<void> loadSettings() async {
+    settings.value = await DatabaseHelper.getSettings(); // Fetch settings from database
+  }
   Future<void> savePayment({
     required int memberId,
     required double paidAmount,
     required double currentBalance,
+    required String mobileNumber,
   }) async {
     // Fetch the last bill number from the database
     final List<Map<String, dynamic>> lastBill = await database.rawQuery(
@@ -55,6 +61,19 @@ class CollectionController extends GetxController {
     UPDATE members SET c_balance = c_balance + ? WHERE m_id = ?
   ''', [paidAmount, memberId]);
 
+    if (settings['sms_enable']==1) {
+      double totalBalance = currentBalance - paidAmount;
+      String tot = totalBalance.toString();
+      String message = '''Bill No : $billNo\nPaid     : $paidAmount\nC.Balance: $tot''';
+      if(mobileNumber.length==10) {
+        String phoneNumber = "+91" + mobileNumber;
+        smsController.sendSms(
+          phoneNumber,
+          message,
+        );
+      }
+      Get.snackbar("Payment", smsController.sendingStatus as String);
+    }
     // Fetch and update payments (if needed for further processing)
     await fetchPayments(memberId);
   }

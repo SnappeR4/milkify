@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:milkify/App/controllers/sms_controller.dart';
 import 'package:milkify/App/data/models/member.dart';
 import 'package:milkify/App/data/models/product.dart';
 import 'package:milkify/App/data/models/transaction.dart';
@@ -8,6 +9,7 @@ import 'package:milkify/App/utils/logger.dart';
 import 'package:sqflite/sqflite.dart';
 
 class SaleController extends GetxController {
+  // final SmsController smsController = Get.put(SmsController());
   final searchController = TextEditingController();
   var liters = 0.0.obs;
   TextEditingController litersController = TextEditingController();
@@ -98,6 +100,10 @@ class SaleController extends GetxController {
 
     if (result > 0) {
       await fetchTransactions();
+      // smsController.sendSms(
+      //   '+919960416178',
+      //   'Hello',
+      // );
       Logger.info('update was successful, fetch the updated transactions');
     } else {
       Logger.info('Failed to update transaction');

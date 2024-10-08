@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:milkify/App/controllers/collection_controller.dart';
 import 'package:milkify/App/controllers/sale_controller.dart';
+import 'package:milkify/App/controllers/sms_controller.dart';
 import 'package:milkify/App/data/models/transaction.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -8,6 +9,8 @@ import '../../data/services/database_helper.dart';
 import '../../utils/logger.dart';
 
 class MemberController extends GetxController {
+  final SmsController smsController = Get.put(SmsController());
+  RxMap<String, Object?> settings = <String, Object?>{}.obs;
   // List to store the members
   final RxList<Map<String, dynamic>> members = <Map<String, dynamic>>[].obs;
   // List to store filtered members for the search
@@ -194,7 +197,24 @@ class MemberController extends GetxController {
     await DatabaseHelper.saveTransaction(transaction);
     fetchMembers();
     Logger.info(transaction.toMap().toString());
-    Get.snackbar('Success', 'Transaction added successfully');
+
+    if (settings['sms_enable']==1) {
+      String totalBalance = (member['c_balance']+ total).toString();
+      String message = '''Receipt No: $newReceiptNo\nMilk Type : ${member['milk_type']}\nLiters    : $liters\nRate      : $rate\nTotal     : $total\nC.Balance : $totalBalance''';
+      if(member["mobile_number"].toString().length==10) {
+        String phoneNumber = "+91" + member["mobile_number"];
+        smsController.sendSms(
+          phoneNumber,
+          message,
+        );
+        Get.snackbar("Payment", smsController.sendingStatus as String);
+      }
+    } else {
+      Get.snackbar('Success', 'Transaction added successfully');
+    }
+  }
+  Future<void> loadSettings() async {
+    settings.value = await DatabaseHelper.getSettings(); // Fetch settings from database
   }
   // Initialize the controller
   @override
@@ -202,5 +222,6 @@ class MemberController extends GetxController {
     super.onInit();
     database = await _dbHelper.database;
     fetchMembers();
+    loadSettings();
   }
 }

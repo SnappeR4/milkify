@@ -185,6 +185,7 @@ class CollectionPage extends StatelessWidget {
                       memberId: selectedMemberPayment['m_id'],
                       paidAmount: paidAmount,
                       currentBalance: selectedMemberPayment['c_balance'],
+                      mobileNumber: selectedMemberPayment['mobile_number']
                     );
 
                     Logger.info('Payment transaction submitted');
