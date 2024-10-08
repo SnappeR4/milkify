@@ -4,12 +4,11 @@ import 'package:milkify/App/user_interface/widgets/report_widget.dart';
 import '../../controllers/report_controller.dart';
 
 class ReportPage extends StatelessWidget {
+  final ReportController controller = Get.find<ReportController>();
   ReportPage({super.key});
-
   @override
   Widget build(BuildContext context) {
-    final ReportController controller = Get.find();
-
+    controller.syncReportData();
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -26,11 +25,11 @@ class ReportPage extends StatelessWidget {
                 value1: controller.sumLiters.value,
                 value2: controller.sumTotal.value,
                 onPressed: () {
-                  Get.snackbar('Button Clicked', 'Sale Report Button was clicked!');
+                  //pdf print view and print page where get the sale data by from to date
+                  Get.snackbar('Button Clicked', 'Member Report Button was clicked!');
                 },
               )),
-
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               const Center(
                 child: Text('TODAY PAYMENT REPORT', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ),
@@ -40,11 +39,12 @@ class ReportPage extends StatelessWidget {
                 value1: controller.recordCount.value,
                 value2: controller.sumPaidAmount.value,
                 onPressed: () {
-                  Get.snackbar('Button Clicked', 'Payment Report Button was clicked!');
+                  //pdf print view and print page where get the payment collection data by from to date
+                  Get.snackbar('Button Clicked', 'Member Report Button was clicked!');
                 },
               )),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               const Center(
                 child: Text('MEMBER REPORT', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ),
@@ -54,11 +54,12 @@ class ReportPage extends StatelessWidget {
                 value1: controller.totalMembers.value,
                 value2: controller.totalLiters.value,
                 onPressed: () {
+                  //pdf print view and print page where get the member data data by id also full report or custom date
                   Get.snackbar('Button Clicked', 'Member Report Button was clicked!');
                 },
               )),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               const Center(
                 child: Text('EDITED REPORT', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ),
@@ -68,7 +69,8 @@ class ReportPage extends StatelessWidget {
                 value1: controller.editedCount.value,
                 value2: controller.deletedCount.value,
                 onPressed: () {
-                  Get.snackbar('Button Clicked', 'Edited Report Button was clicked!');
+                  //pdf print view and print page where get the transactions edited & delete data by from to date
+                  Get.snackbar('Button Clicked', 'Member Report Button was clicked!');
                 },
               )),
             ],

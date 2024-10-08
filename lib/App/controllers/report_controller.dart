@@ -15,18 +15,16 @@ class ReportController extends GetxController {
   var totalLiters = '0'.obs;
   var editedCount = '0'.obs;
   var deletedCount = '0'.obs;
-
+  var isControllerInitialized = false.obs;
   @override
   Future<void> onInit() async {
     super.onInit();
     database = await _databaseHelper.database;
-
-    // Load all the reports' data on initialization
-    fetchReportData();
+    await fetchReportData();
   }
 
   // Fetch all report data
-  void fetchReportData() async {
+  Future<void> fetchReportData() async {
     sumLiters.value = await getCurrentDateSumLiters();
     sumTotal.value = await getCurrentDateSumTotal();
     recordCount.value = await getCurrentDateRecordCount();
@@ -34,7 +32,19 @@ class ReportController extends GetxController {
     totalMembers.value = await getTotalMemberCount();
     totalLiters.value = await getTotalLitersForMembers();
     editedCount.value = await getEditedBillCount();
-    deletedCount.value = await getDeletedBillCount();
+    isControllerInitialized.value = true;
+  }
+
+  Future<void> syncReportData() async {
+    if (isControllerInitialized.value) {
+      sumLiters.value = await getCurrentDateSumLiters();
+      sumTotal.value = await getCurrentDateSumTotal();
+      recordCount.value = await getCurrentDateRecordCount();
+      sumPaidAmount.value = await getCurrentDateSumPaidAmount();
+      totalMembers.value = await getTotalMemberCount();
+      totalLiters.value = await getTotalLitersForMembers();
+      editedCount.value = await getEditedBillCount();
+    }
   }
 
   // Get the current date

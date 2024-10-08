@@ -49,11 +49,12 @@ class ReportTableWidget extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              ElevatedButton(
-                onPressed: onPressed,
-                child: const Text('CUSTOM'),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: onPressed,
+                  child: const Text('CUSTOM'),
+                ),
               ),
             ],
           ),
