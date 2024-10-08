@@ -222,18 +222,6 @@ class DatabaseHelper {
     }).toList();
   }
 
-  // static Future<int> updateTransaction(String receiptNo, String date, double liters, double total) async {
-  //   return await _database!.update(
-  //     'transactions',
-  //     {
-  //       'liters': liters,
-  //       'total': total,
-  //     },
-  //     where: 'receipt_no = ? AND date = ?',
-  //     whereArgs: [receiptNo, date],
-  //   );
-  // }
-
   static Future<int> updateTransaction(String receiptNo, String date, double liters, double total) async {
     // Fetch the original transaction amount
     List<Map<String, dynamic>> originalTransaction = await _database!.query(
@@ -254,7 +242,7 @@ class DatabaseHelper {
           'liters': liters,
           'total': total,
         },
-        where: 'receipt_no = ? AND date = ?',
+        where: 'receipt_no = ? AND date = ? AND bill_type = 2',
         whereArgs: [receiptNo, date],
       );
 
