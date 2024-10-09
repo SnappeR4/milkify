@@ -25,4 +25,8 @@ class AppRoutes {
   static const String milkType = '/milkType';
   static const String shiftType = '/shiftType';
   static const String paymentPeriod = '/paymentPeriod';
+
+  //report
+  static const String transactionsView = '/transactionsView';
+  static const String paymentView = '/paymentView';
 }

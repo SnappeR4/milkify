@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:milkify/App/routes/app_routes.dart';
 import 'package:milkify/App/user_interface/widgets/report_widget.dart';
 import '../../controllers/report_controller.dart';
 
@@ -25,8 +26,7 @@ class ReportPage extends StatelessWidget {
                 value1: controller.sumLiters.value,
                 value2: controller.sumTotal.value,
                 onPressed: () {
-                  //pdf print view and print page where get the sale data by from to date
-                  Get.snackbar('Button Clicked', 'Member Report Button was clicked!');
+                  Get.toNamed(AppRoutes.transactionsView);
                 },
               )),
               const SizedBox(height: 10),
@@ -39,8 +39,7 @@ class ReportPage extends StatelessWidget {
                 value1: controller.recordCount.value,
                 value2: controller.sumPaidAmount.value,
                 onPressed: () {
-                  //pdf print view and print page where get the payment collection data by from to date
-                  Get.snackbar('Button Clicked', 'Member Report Button was clicked!');
+                  Get.toNamed(AppRoutes.paymentView);
                 },
               )),
 

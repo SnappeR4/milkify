@@ -1,7 +1,11 @@
 import 'package:get/get.dart';
 import 'package:milkify/App/bindings/collection_binding.dart';
+import 'package:milkify/App/bindings/report/payment_view_binding.dart';
+import 'package:milkify/App/bindings/report/transactions_view_binding.dart';
 import 'package:milkify/App/bindings/settings/rate_settings_binding.dart';
 import 'package:milkify/App/user_interface/pages/collection_page.dart';
+import 'package:milkify/App/user_interface/pages/report/payment_view.dart';
+import 'package:milkify/App/user_interface/pages/report/transactions_view.dart';
 import 'package:milkify/App/user_interface/pages/settings/rate_settings_page.dart';
 import '../bindings/dashboard_binding.dart';
 import '../bindings/register_binding.dart';
@@ -114,6 +118,17 @@ class AppPages {
       name: AppRoutes.rateSettings,
       page: () => RateSettingPage(),
       binding: RateSettingsBinding(),
+    ),
+    //report
+    GetPage(
+      name: AppRoutes.transactionsView,
+      page: () => TransactionView(),
+      binding: TransactionsViewBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.paymentView,
+      page: () => PaymentView(),
+      binding: PaymentViewBinding(),
     )
   ];
 }
