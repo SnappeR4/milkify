@@ -2,13 +2,16 @@ import 'package:get/get.dart';
 import 'package:milkify/App/controllers/collection_controller.dart';
 import 'package:milkify/App/controllers/sale_controller.dart';
 import 'package:milkify/App/controllers/sms_controller.dart';
+import 'package:milkify/App/data/models/member.dart';
 import 'package:milkify/App/data/models/transaction.dart';
+import 'package:milkify/App/data/services/member_service.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../data/services/database_helper.dart';
 import '../../utils/logger.dart';
 
 class MemberController extends GetxController {
+  final MembersService membersService = MembersService();
   final SmsController smsController = Get.put(SmsController());
   RxMap<String, Object?> settings = <String, Object?>{}.obs;
   // List to store the members
@@ -202,7 +205,7 @@ class MemberController extends GetxController {
       String totalBalance = (member['c_balance']+ total).toString();
       String message = '''Receipt No: $newReceiptNo\nMilk Type : ${member['milk_type']}\nLiters    : $liters\nRate      : $rate\nTotal     : $total\nC.Balance : $totalBalance''';
       if(member["mobile_number"].toString().length==10) {
-        String phoneNumber = "+91" + member["mobile_number"];
+        String phoneNumber = "+91$member['mobile_number']";
         smsController.sendSms(
           phoneNumber,
           message,
@@ -210,11 +213,75 @@ class MemberController extends GetxController {
         Get.snackbar("Payment", smsController.sendingStatus as String);
       }
     } else {
-      Get.snackbar('Success', 'Transaction added successfully');
+      Get.snackbar('Success', 'Transaction Saved successfully');
     }
   }
   Future<void> loadSettings() async {
     settings.value = await DatabaseHelper.getSettings(); // Fetch settings from database
+  }
+
+  Future<void> importMembers() async {
+    List<Member>? importedMembers = await membersService.importMembers();
+    if (importedMembers != null) {
+      // Delete all members from the database before inserting new ones
+      await deleteAllMembers();
+
+      // Insert imported members into the database
+      for (var member in importedMembers) {
+        if(member.id>0) {
+          await insertMemberIntoDatabase(member);
+        }
+      }
+      Get.snackbar("Member File", "Imported Successfully");
+      await fetchMembers();
+    }
+  }
+
+  // Method to delete all members from the database
+  Future<void> deleteAllMembers() async {
+    await database.delete('members');
+  }
+
+  // Method to insert a member into the database
+  Future<void> insertMemberIntoDatabase(Member member) async {
+    Map<String, dynamic> memberData = {
+      'm_id': member.id,
+      'name': member.name,
+      'address': member.address,
+      'mobile_number': member.mobileNumber,
+      'recently_paid': member.recentlyPaid,
+      'c_balance': member.currentBalance,
+      'milk_type': member.milkType,
+      'liters': member.liters,
+    };
+
+    // Insert the member into the database
+    await database.insert(
+      'members', // Name of the table
+      memberData,
+      conflictAlgorithm: ConflictAlgorithm.replace, // Replace if already exists
+    );
+  }
+  Future<void> exportMembers() async {
+    try {
+      // Convert RxList<Map<String, dynamic>> to List<Member>
+      List<Member> membersList = members.map((member) => Member(
+        id: member['m_id'],
+        name: member['name'],
+        address: member['address'],
+        mobileNumber: member['mobile_number'],
+        recentlyPaid: member['recently_paid'],
+        currentBalance: member['c_balance'],
+        milkType: member['milk_type'],
+        liters: member['liters'],
+      )).toList();
+
+      // Export members to Excel
+      String response = await membersService.exportMembers(membersList);
+      Get.snackbar("Member File", response);
+    } catch (e) {
+      Logger.error('Error exporting members: $e');
+    }
   }
   // Initialize the controller
   @override

@@ -22,6 +22,27 @@ class MemberListPage extends StatelessWidget {
               Get.toNamed(AppRoutes.addMember);
             },
           ),
+          PopupMenuButton<String>(
+            color: Colors.white,
+            onSelected: (value) {
+              if (value == 'Import') {
+                controller.importMembers();
+              } else if (value == 'Export') {
+                controller.exportMembers();
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem<String>(
+                value: 'Import',
+                child: Text('Import Members'),
+              ),
+              const PopupMenuItem<String>(
+                value: 'Export',
+                child: Text('Export Members'),
+              ),
+            ],
+            icon: const Icon(Icons.more_vert), // Three vertical dot icon
+          ),
         ],
       ),
       body: Padding(
