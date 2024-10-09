@@ -31,6 +31,7 @@ class PaymentView extends StatelessWidget {
             build: (format) => _generatePdf(),
           ):Column(
             children: [
+              // Date range selection
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -43,10 +44,10 @@ class PaymentView extends StatelessWidget {
                         lastDate: DateTime(2101),
                       );
                       if (pickedDate != null) {
-                        controller.setDateRange(pickedDate, DateTime.parse(controller.fromDate.value.isNotEmpty ? controller.fromDate.value : DateTime.now().toIso8601String()));
+                        controller.setDateRange(pickedDate, DateTime.parse(controller.toDate.value.isNotEmpty ? controller.toDate.value : DateTime.now().toIso8601String()));
                       }
                     },
-                    child: Obx((){return Text("From: ${controller.fromDate.value.isEmpty ? 'Select' : controller.fromDate.value}");}),
+                    child: Text("From: ${controller.fromDate.value.isEmpty ? 'Select' : controller.fromDate.value}"),
                   ),
                   TextButton(
                     onPressed: () async {
@@ -57,10 +58,10 @@ class PaymentView extends StatelessWidget {
                         lastDate: DateTime(2101),
                       );
                       if (pickedDate != null) {
-                        controller.setDateRange(DateTime.parse(controller.toDate.value.isNotEmpty ? controller.toDate.value : DateTime.now().toIso8601String()), pickedDate);
+                        controller.setDateRange(DateTime.parse(controller.fromDate.value.isNotEmpty ? controller.fromDate.value : DateTime.now().toIso8601String()), pickedDate);
                       }
                     },
-                    child: Obx((){ return Text("To: ${controller.toDate.value.isEmpty ? 'Select' : controller.toDate.value}");}),
+                    child: Text("To: ${controller.toDate.value.isEmpty ? 'Select' : controller.toDate.value}"),
                   ),
                 ],
               ),
@@ -89,9 +90,10 @@ class PaymentView extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final transaction = controller.paymentTransactions[index];
                       return ListTile(
-                        title: Text('${transaction.billNo} - ${transaction.paidAmount}'),
-                        subtitle: Text('Date: ${transaction.date}'),
-                      );
+                          title: Text('Bill No: ${transaction.billNo}'),
+                          subtitle: Text('M ID: ${transaction.memberId} | Remaining: ₹${transaction.currentBalance}'),
+                          trailing: Text('₹${transaction.paidAmount}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        );
                     },
                   );
                 }),
@@ -105,7 +107,7 @@ class PaymentView extends StatelessWidget {
     final regularFont = await PdfGoogleFonts.nunitoExtraBold();
 
     // Split transactions into chunks of 20 records per page
-    const int recordsPerPage = 20;
+    const int recordsPerPage = 30;
     List<List<MemberPayment>> chunks = [];
 
     for (var i = 0; i < controller.paymentTransactions.length; i += recordsPerPage) {

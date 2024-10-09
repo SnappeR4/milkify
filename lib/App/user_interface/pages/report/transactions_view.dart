@@ -32,6 +32,7 @@ class TransactionView extends StatelessWidget {
         build: (format) => _generatePdf(),
       ):Column(
         children: [
+          // Date range selection
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -44,10 +45,10 @@ class TransactionView extends StatelessWidget {
                     lastDate: DateTime(2101),
                   );
                   if (pickedDate != null) {
-                    controller.setDateRange(pickedDate, DateTime.parse(controller.fromDate.value.isNotEmpty ? controller.fromDate.value : DateTime.now().toIso8601String()));
+                    controller.setDateRange(pickedDate, DateTime.parse(controller.toDate.value.isNotEmpty ? controller.toDate.value : DateTime.now().toIso8601String()));
                   }
                 },
-                child: Obx((){return Text("From: ${controller.fromDate.value.isEmpty ? 'Select' : controller.fromDate.value}");}),
+                child: Text("From: ${controller.fromDate.value.isEmpty ? 'Select' : controller.fromDate.value}"),
               ),
               TextButton(
                 onPressed: () async {
@@ -58,10 +59,10 @@ class TransactionView extends StatelessWidget {
                     lastDate: DateTime(2101),
                   );
                   if (pickedDate != null) {
-                    controller.setDateRange(DateTime.parse(controller.toDate.value.isNotEmpty ? controller.toDate.value : DateTime.now().toIso8601String()), pickedDate);
+                    controller.setDateRange(DateTime.parse(controller.fromDate.value.isNotEmpty ? controller.fromDate.value : DateTime.now().toIso8601String()), pickedDate);
                   }
                 },
-                child: Obx((){ return Text("To: ${controller.toDate.value.isEmpty ? 'Select' : controller.toDate.value}");}),
+                child: Text("To: ${controller.toDate.value.isEmpty ? 'Select' : controller.toDate.value}"),
               ),
             ],
           ),
@@ -90,8 +91,9 @@ class TransactionView extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final transaction = controller.transactions[index];
                   return ListTile(
-                    title: Text('${transaction.receiptNo} - ${transaction.total}'),
-                    subtitle: Text('Date: ${transaction.date}'),
+                    title: Text('Receipt No: ${transaction.receiptNo}'),
+                    subtitle: Text('M ID: ${transaction.memberId} | Liters: ${transaction.liters} | Rate: ₹${transaction.productRate}'),
+                    trailing: Text('₹${transaction.total.toStringAsFixed(2)}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
                   );
                 },
               );

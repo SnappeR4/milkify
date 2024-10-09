@@ -207,7 +207,7 @@ class SalePage extends StatelessWidget {
                       final transaction = transactions[index];
                       return ListTile(
                         title: Text('Receipt No: ${transaction.receiptNo}'),
-                        subtitle: Text('Liters: ${transaction.liters} | Rate: ₹${transaction.productRate}'),
+                        subtitle: Text('M ID: ${transaction.memberId} | Liters: ${transaction.liters} | Rate: ₹${transaction.productRate}'),
                         trailing: Text('₹${transaction.total.toStringAsFixed(2)}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
                         onTap: (){
                           _showEditTransactionDialog(context,transaction);

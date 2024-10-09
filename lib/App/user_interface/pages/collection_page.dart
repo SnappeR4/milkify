@@ -213,7 +213,7 @@ class CollectionPage extends StatelessWidget {
                       final payment = paymentTransactions[index];
                       return ListTile(
                         title: Text('Bill No: ${payment.billNo}'),
-                        subtitle: Text('Remaining: ₹${payment.currentBalance} | Paid: ₹${payment.paidAmount}'),
+                        subtitle: Text('M ID: ${payment.memberId} | Remaining: ₹${payment.currentBalance}'),
                         trailing: Text('₹${payment.paidAmount}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                       );
                     },

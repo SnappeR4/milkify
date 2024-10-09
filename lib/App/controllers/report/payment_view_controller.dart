@@ -15,6 +15,10 @@ class PaymentViewController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     database = await _dbHelper.database;
+    DateTime currentDate = DateTime.now();
+    fromDate.value = _formatDate(currentDate); // Set current date to 'fromDate'
+    toDate.value = _formatDate(currentDate);
+    fetchTransactions();
   }
 
   String _formatDate(DateTime date) {

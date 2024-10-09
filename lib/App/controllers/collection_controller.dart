@@ -30,8 +30,7 @@ class CollectionController extends GetxController {
   }) async {
     // Fetch the last bill number from the database
     final List<Map<String, dynamic>> lastBill = await database.rawQuery(
-      'SELECT MAX(bill_no) as last_bill_no FROM member_payment WHERE m_id = ?',
-      [memberId],
+      'SELECT MAX(bill_no) as last_bill_no FROM member_payment'
     );
 
     // If there are no previous bills, set it to 1; otherwise, increment by 1
@@ -52,8 +51,7 @@ class CollectionController extends GetxController {
     // Insert payment into the database
     await database.insert(
       'member_payment',
-      payment.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
+      payment.toMap()
     );
 
     // Update the member's c_balance by adding the paid amount
@@ -66,7 +64,7 @@ class CollectionController extends GetxController {
       String tot = totalBalance.toString();
       String message = '''Bill No : $billNo\nPaid     : $paidAmount\nC.Balance: $tot''';
       if(mobileNumber.length==10) {
-        String phoneNumber = "+91" + mobileNumber;
+        String phoneNumber = "+91$mobileNumber";
         smsController.sendSms(
           phoneNumber,
           message,
