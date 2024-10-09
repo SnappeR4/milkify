@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:milkify/App/controllers/report/transactions_view_controller.dart'; // For formatting dates
 import 'package:milkify/App/data/models/transaction.dart';
 import 'package:pdf/pdf.dart';
@@ -22,7 +21,9 @@ class TransactionView extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.picture_as_pdf),
             onPressed: () async {
-              controller.isPdfGenerated.value = true;
+              if(controller.transactions.isNotEmpty) {
+                controller.isPdfGenerated.value = true;
+              }
             },
           ),
         ],
@@ -70,11 +71,6 @@ class TransactionView extends StatelessWidget {
             onPressed: () {
               if (controller.fromDate.value.isNotEmpty && controller.toDate.value.isNotEmpty) {
                 controller.fetchTransactions(); // Fetch transactions based on selected date range
-              } else {
-                // Show a message if dates are not selected
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Please select both dates')),
-                );
               }
             },
             child: const Text('Fetch Transactions'),
@@ -83,7 +79,7 @@ class TransactionView extends StatelessWidget {
           Expanded(
             child: Obx(() {
               if (controller.transactions.isEmpty) {
-                return Center(child: Text('No transactions found'));
+                return const Center(child: Text('No transactions found'));
               }
 
               return ListView.builder(
@@ -159,18 +155,18 @@ class TransactionView extends StatelessWidget {
                 cellStyle: pw.TextStyle(font: regularFont, fontSize: 9),
                 cellAlignment: pw.Alignment.centerLeft,
                 columnWidths: {
-                  0: pw.FixedColumnWidth(70),  // Adjust width for 'Date'
-                  1: pw.FixedColumnWidth(60),  // Adjust width for 'Receipt No'
-                  2: pw.FixedColumnWidth(60),  // Adjust width for 'Bill Type'
-                  3: pw.FixedColumnWidth(60),  // Adjust width for 'Member ID'
-                  4: pw.FixedColumnWidth(70),  // Adjust width for 'Opening Balance'
-                  5: pw.FixedColumnWidth(60),  // Adjust width for 'Product ID'
-                  6: pw.FixedColumnWidth(50),  // Adjust width for 'Rate'
-                  7: pw.FixedColumnWidth(50),  // Adjust width for 'Liters'
-                  8: pw.FixedColumnWidth(60),  // Adjust width for 'Total'
+                  0: const pw.FixedColumnWidth(70),  // Adjust width for 'Date'
+                  1: const pw.FixedColumnWidth(60),  // Adjust width for 'Receipt No'
+                  2: const pw.FixedColumnWidth(60),  // Adjust width for 'Bill Type'
+                  3: const pw.FixedColumnWidth(60),  // Adjust width for 'Member ID'
+                  4: const pw.FixedColumnWidth(70),  // Adjust width for 'Opening Balance'
+                  5: const pw.FixedColumnWidth(60),  // Adjust width for 'Product ID'
+                  6: const pw.FixedColumnWidth(50),  // Adjust width for 'Rate'
+                  7: const pw.FixedColumnWidth(50),  // Adjust width for 'Liters'
+                  8: const pw.FixedColumnWidth(60),  // Adjust width for 'Total'
                 },
                 border: pw.TableBorder.all(),
-                cellPadding: pw.EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                cellPadding: const pw.EdgeInsets.symmetric(horizontal: 4, vertical: 4),
               ),
               pw.SizedBox(height: 20),
             ],

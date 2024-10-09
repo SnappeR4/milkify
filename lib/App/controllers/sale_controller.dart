@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:milkify/App/controllers/sms_controller.dart';
 import 'package:milkify/App/data/models/member.dart';
 import 'package:milkify/App/data/models/product.dart';
 import 'package:milkify/App/data/models/transaction.dart';

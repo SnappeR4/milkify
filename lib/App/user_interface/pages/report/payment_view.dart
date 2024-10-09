@@ -21,7 +21,9 @@ class PaymentView extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.picture_as_pdf),
               onPressed: () async {
-                controller.isPdfGenerated.value = true;
+                if(controller.paymentTransactions.isNotEmpty) {
+                  controller.isPdfGenerated.value = true;
+                }
               },
             ),
           ],
@@ -69,11 +71,6 @@ class PaymentView extends StatelessWidget {
                 onPressed: () {
                   if (controller.fromDate.value.isNotEmpty && controller.toDate.value.isNotEmpty) {
                     controller.fetchTransactions(); // Fetch transactions based on selected date range
-                  } else {
-                    // Show a message if dates are not selected
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Please select both dates')),
-                    );
                   }
                 },
                 child: const Text('Fetch Transactions'),
@@ -82,7 +79,7 @@ class PaymentView extends StatelessWidget {
               Expanded(
                 child: Obx(() {
                   if (controller.paymentTransactions.isEmpty) {
-                    return Center(child: Text('No transactions found'));
+                    return const Center(child: Text('No transactions found'));
                   }
 
                   return ListView.builder(
@@ -144,15 +141,15 @@ class PaymentView extends StatelessWidget {
                 cellStyle: pw.TextStyle(font: regularFont, fontSize: 9),
                 cellAlignment: pw.Alignment.centerLeft,
                 columnWidths: {
-                  0: pw.FixedColumnWidth(60), // Adjust width for 'Date'
-                  1: pw.FixedColumnWidth(40), // Adjust width for 'Time'
-                  2: pw.FixedColumnWidth(60), // Adjust width for 'Bill No'
-                  3: pw.FixedColumnWidth(60), // Adjust width for 'Member ID'
-                  4: pw.FixedColumnWidth(80), // Adjust width for 'Paid Amount'
-                  5: pw.FixedColumnWidth(80), // Adjust width for 'Current Balance'
+                  0: const pw.FixedColumnWidth(60), // Adjust width for 'Date'
+                  1: const pw.FixedColumnWidth(40), // Adjust width for 'Time'
+                  2: const pw.FixedColumnWidth(60), // Adjust width for 'Bill No'
+                  3: const pw.FixedColumnWidth(60), // Adjust width for 'Member ID'
+                  4: const pw.FixedColumnWidth(80), // Adjust width for 'Paid Amount'
+                  5: const pw.FixedColumnWidth(80), // Adjust width for 'Current Balance'
                 },
                 border: pw.TableBorder.all(),
-                cellPadding: pw.EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                cellPadding: const pw.EdgeInsets.symmetric(horizontal: 4, vertical: 4),
               ),
               pw.SizedBox(height: 20),
             ],
