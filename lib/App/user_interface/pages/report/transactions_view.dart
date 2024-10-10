@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:milkify/App/controllers/report/transactions_view_controller.dart'; // For formatting dates
 import 'package:milkify/App/data/models/transaction.dart';
+import 'package:milkify/App/utils/date_picker_utils.dart';
+import 'package:milkify/App/utils/utils.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -16,7 +18,7 @@ class TransactionView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Transaction History'),
+        title: const Text('Sale Transactions'),
         actions: [
           IconButton(
             icon: const Icon(Icons.picture_as_pdf),
@@ -39,28 +41,28 @@ class TransactionView extends StatelessWidget {
             children: [
               TextButton(
                 onPressed: () async {
-                  DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2101),
-                  );
+                  DateTime? pickedDate = await DatePickerUtils.pickDate(context, DateTime.now());
                   if (pickedDate != null) {
-                    controller.setDateRange(pickedDate, DateTime.parse(controller.toDate.value.isNotEmpty ? controller.toDate.value : DateTime.now().toIso8601String()));
+                    controller.setDateRange(
+                      pickedDate,
+                      DateTime.parse(controller.toDate.value.isNotEmpty
+                          ? controller.toDate.value
+                          : DateTime.now().toIso8601String()),
+                    );
                   }
                 },
                 child: Text("From: ${controller.fromDate.value.isEmpty ? 'Select' : controller.fromDate.value}"),
               ),
               TextButton(
                 onPressed: () async {
-                  DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2101),
-                  );
+                  DateTime? pickedDate = await DatePickerUtils.pickDate(context, DateTime.now());
                   if (pickedDate != null) {
-                    controller.setDateRange(DateTime.parse(controller.fromDate.value.isNotEmpty ? controller.fromDate.value : DateTime.now().toIso8601String()), pickedDate);
+                    controller.setDateRange(
+                      DateTime.parse(controller.fromDate.value.isNotEmpty
+                          ? controller.fromDate.value
+                          : DateTime.now().toIso8601String()),
+                      pickedDate,
+                    );
                   }
                 },
                 child: Text("To: ${controller.toDate.value.isEmpty ? 'Select' : controller.toDate.value}"),
@@ -86,8 +88,16 @@ class TransactionView extends StatelessWidget {
                 itemCount: controller.transactions.length,
                 itemBuilder: (context, index) {
                   final transaction = controller.transactions[index];
+                  final String status;
+                  if (transaction.billType == '2') {
+                    status = ' Edited';
+                  } else {
+                    status = transaction.billType == '3'
+                      ? ' Deleted'
+                      : ' ';
+                  }
                   return ListTile(
-                    title: Text('Receipt No: ${transaction.receiptNo}'),
+                    title: Text('Receipt No: ${transaction.receiptNo} $status'),
                     subtitle: Text('M ID: ${transaction.memberId} | Liters: ${transaction.liters} | Rate: ₹${transaction.productRate}'),
                     trailing: Text('₹${transaction.total.toStringAsFixed(2)}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
                   );
@@ -104,8 +114,8 @@ class TransactionView extends StatelessWidget {
     final pdf = pw.Document(version: PdfVersion.pdf_1_5, compress: true);
     final regularFont = await PdfGoogleFonts.nunitoExtraBold();
 
-    // Split transactions into chunks of 22 records per page
-    const int recordsPerPage = 20;
+    // Split transactions into chunks of 20 records per page
+    const int recordsPerPage = 17;
     List<List<Transactions>> chunks = [];
 
     for (var i = 0; i < controller.transactions.length; i += recordsPerPage) {
@@ -117,14 +127,31 @@ class TransactionView extends StatelessWidget {
       ));
     }
 
-    // Add a page for each chunk of 22 records
-    for (final chunk in chunks) {
+    // Calculate totals
+    final int totalReceiptCount = controller.transactions.length;
+    final int totalMembers = controller.transactions.map((t) => t.memberId).toSet().length;
+    final double totalLiters = controller.transactions.fold(0.0, (sum, t) => sum + t.liters);
+    final double totalAmount = controller.transactions.fold(0.0, (sum, t) => sum + t.total);
+
+    // Add a page for each chunk of 20 records
+    for (int i = 0; i < chunks.length; i++) {
+      final chunk = chunks[i];
+
       pdf.addPage(
         pw.Page(
-          build: (context) => pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Text('Sale Report ${controller.fromDate.value} To ${controller.toDate.value}', style: pw.TextStyle(font: regularFont, fontSize: 18)),
+          build: (context) {
+            final children = <pw.Widget>[
+              pw.Align(
+                alignment: pw.Alignment.center, // Center align the text
+                child: pw.Text(
+                  'Sale Report ${ConverterUtils.convertDateFormat(controller.fromDate.value.toString())} To ${ConverterUtils.convertDateFormat(controller.toDate.value.toString())}',
+                  style: pw.TextStyle(
+                    font: regularFont,
+                    fontSize: 16,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                ),
+              ),
               pw.SizedBox(height: 10),
               pw.Table.fromTextArray(
                 headers: [
@@ -139,10 +166,15 @@ class TransactionView extends StatelessWidget {
                   'Total',
                 ],
                 data: chunk.map((transaction) {
+                  final status = transaction.billType == '2'
+                      ? ' Edited'
+                      : transaction.billType == '3'
+                      ? ' Deleted'
+                      : ' Regular';
                   return [
-                    transaction.date + transaction.time.substring(0,8),
+                    transaction.date + transaction.time.substring(0, 8),
                     transaction.receiptNo,
-                    transaction.billType,
+                    status,
                     transaction.memberId.toString(),
                     transaction.memberOpeningBalance.toString(),
                     transaction.productId.toString(),
@@ -151,30 +183,83 @@ class TransactionView extends StatelessWidget {
                     transaction.total.toString(),
                   ];
                 }).toList(),
-                headerStyle: pw.TextStyle(font: regularFont, fontSize: 10, fontWeight: pw.FontWeight.bold),
+                headerStyle: pw.TextStyle(
+                  font: regularFont,
+                  fontSize: 10,
+                  fontWeight: pw.FontWeight.bold,
+                ),
                 cellStyle: pw.TextStyle(font: regularFont, fontSize: 9),
                 cellAlignment: pw.Alignment.centerLeft,
                 columnWidths: {
-                  0: const pw.FixedColumnWidth(70),  // Adjust width for 'Date'
-                  1: const pw.FixedColumnWidth(60),  // Adjust width for 'Receipt No'
-                  2: const pw.FixedColumnWidth(60),  // Adjust width for 'Bill Type'
-                  3: const pw.FixedColumnWidth(60),  // Adjust width for 'Member ID'
-                  4: const pw.FixedColumnWidth(70),  // Adjust width for 'Opening Balance'
-                  5: const pw.FixedColumnWidth(60),  // Adjust width for 'Product ID'
-                  6: const pw.FixedColumnWidth(50),  // Adjust width for 'Rate'
-                  7: const pw.FixedColumnWidth(50),  // Adjust width for 'Liters'
-                  8: const pw.FixedColumnWidth(60),  // Adjust width for 'Total'
+                  0: const pw.FixedColumnWidth(70), // Adjust width for 'Date'
+                  1: const pw.FixedColumnWidth(60), // Adjust width for 'Receipt No'
+                  2: const pw.FixedColumnWidth(60), // Adjust width for 'Bill Type'
+                  3: const pw.FixedColumnWidth(60), // Adjust width for 'Member ID'
+                  4: const pw.FixedColumnWidth(70), // Adjust width for 'Opening Balance'
+                  5: const pw.FixedColumnWidth(60), // Adjust width for 'Product ID'
+                  6: const pw.FixedColumnWidth(50), // Adjust width for 'Rate'
+                  7: const pw.FixedColumnWidth(50), // Adjust width for 'Liters'
+                  8: const pw.FixedColumnWidth(60), // Adjust width for 'Total'
                 },
                 border: pw.TableBorder.all(),
                 cellPadding: const pw.EdgeInsets.symmetric(horizontal: 4, vertical: 4),
               ),
-              pw.SizedBox(height: 20),
-            ],
-          ),
+              pw.SizedBox(height: 10),
+            ];
+
+            // If this is the last chunk and there's space for the summary
+            if (i == chunks.length - 1) {
+              children.addAll([
+                pw.Align(
+                  alignment: pw.Alignment.center, // Center align the text
+                  child: pw.Text(
+                    'Summary of Payment Report',
+                    style: pw.TextStyle(
+                      font: regularFont,
+                      fontSize: 16,
+                      fontWeight: pw.FontWeight.bold,
+                    ),
+                  ),
+                ),
+                pw.SizedBox(height: 10),
+                pw.Table.fromTextArray(
+                  headers: [
+                    'Total Receipt Count',
+                    'Total Members',
+                    'Total Liters',
+                    'Grand Total Amount',
+                  ],
+                  data: [
+                    [
+                      totalReceiptCount.toString(),
+                      totalMembers.toString(),
+                      totalLiters.toStringAsFixed(2),
+                      totalAmount.toStringAsFixed(2),
+                    ],
+                  ],
+                  headerStyle: pw.TextStyle(
+                    font: regularFont,
+                    fontSize: 10,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                  cellStyle: pw.TextStyle(font: regularFont, fontSize: 9),
+                  cellAlignment: pw.Alignment.centerLeft,
+                  border: pw.TableBorder.all(),
+                  cellPadding: const pw.EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                ),
+              ]);
+            }
+
+            return pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: children,
+            );
+          },
         ),
       );
     }
 
     return pdf.save();
   }
+
 }

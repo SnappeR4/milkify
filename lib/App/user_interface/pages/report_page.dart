@@ -68,8 +68,7 @@ class ReportPage extends StatelessWidget {
                 value1: controller.editedCount.value,
                 value2: controller.deletedCount.value,
                 onPressed: () {
-                  //pdf print view and print page where get the transactions edited & delete data by from to date
-                  Get.snackbar('Button Clicked', 'Member Report Button was clicked!');
+                  Get.toNamed(AppRoutes.editDeleteView);
                 },
               )),
             ],

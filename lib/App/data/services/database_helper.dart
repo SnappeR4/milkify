@@ -269,6 +269,7 @@ class DatabaseHelper {
       'transactions',
       {
         'bill_type': 3,
+        'void_bill_flag': 1,
         'edited_timestamp': editedTimestamp,
       },
       where: 'receipt_no = ? AND date = ?',

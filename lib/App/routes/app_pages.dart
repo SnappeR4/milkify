@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
 import 'package:milkify/App/bindings/collection_binding.dart';
+import 'package:milkify/App/bindings/report/edit_delete_binding.dart';
 import 'package:milkify/App/bindings/report/payment_view_binding.dart';
 import 'package:milkify/App/bindings/report/transactions_view_binding.dart';
 import 'package:milkify/App/bindings/settings/rate_settings_binding.dart';
 import 'package:milkify/App/user_interface/pages/collection_page.dart';
+import 'package:milkify/App/user_interface/pages/report/edit_delete_view.dart';
 import 'package:milkify/App/user_interface/pages/report/payment_view.dart';
 import 'package:milkify/App/user_interface/pages/report/transactions_view.dart';
 import 'package:milkify/App/user_interface/pages/settings/rate_settings_page.dart';
@@ -129,6 +131,11 @@ class AppPages {
       name: AppRoutes.paymentView,
       page: () => PaymentView(),
       binding: PaymentViewBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.editDeleteView,
+      page: () => EditDeleteView(),
+      binding: EditDeleteBinding(),
     )
   ];
 }

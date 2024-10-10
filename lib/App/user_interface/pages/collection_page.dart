@@ -72,7 +72,7 @@ class CollectionPage extends StatelessWidget {
   Widget _buildSelectedMemberPaymentDetails() {
     final selectedMemberPayment = memberController.selectedMemberPayment;
     Logger.info(selectedMemberPayment.toString());
-    collectionController.amountController = TextEditingController(text: "0.0");
+    collectionController.amountController = TextEditingController();
     final remainingAmount = selectedMemberPayment['c_balance'];
 
     final List<MemberPayment> paymentTransactions = collectionController.payments.isNotEmpty
@@ -154,7 +154,7 @@ class CollectionPage extends StatelessWidget {
                       TextField(
                         controller: collectionController.amountController,
                         keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(border: OutlineInputBorder(), hintText: 'Enter amount'),
+                        decoration: const InputDecoration(border: OutlineInputBorder(), hintText: '0.0'),
                         // onChanged: (value) {
                         //   // collectionController.updateAmount(); // Update amount when text changes
                         //   Logger.info("Update Amount in Controller");

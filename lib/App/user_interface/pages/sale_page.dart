@@ -281,7 +281,8 @@ class SalePage extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () {
-                SaleController.deleteTransaction(transaction.receiptNo, transaction.date,formatter.format(now));
+                String editTime = formatter.format(now);
+                SaleController.deleteTransaction(transaction.receiptNo, transaction.date,editTime);
                 saleController.fetchTransactions();
                 Navigator.pop(context); // Close the dialog
               },

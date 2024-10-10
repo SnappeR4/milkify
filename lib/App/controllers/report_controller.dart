@@ -32,6 +32,7 @@ class ReportController extends GetxController {
     totalMembers.value = await getTotalMemberCount();
     totalLiters.value = await getTotalLitersForMembers();
     editedCount.value = await getEditedBillCount();
+    deletedCount.value = await getDeletedBillCount();
     isControllerInitialized.value = true;
   }
 
@@ -44,6 +45,7 @@ class ReportController extends GetxController {
       totalMembers.value = await getTotalMemberCount();
       totalLiters.value = await getTotalLitersForMembers();
       editedCount.value = await getEditedBillCount();
+      deletedCount.value = await getDeletedBillCount();
     }
   }
 
@@ -59,7 +61,7 @@ class ReportController extends GetxController {
     final String currentDate = getCurrentDate();
     final List<Map<String, dynamic>> result = await database.rawQuery('''
       SELECT SUM(liters) AS sum_liters FROM transactions
-      WHERE date = ? AND void_bill_flag = 0
+      WHERE date = ? AND bill_type != 3
     ''', [currentDate]);
 
     double sumLiters = result.first['sum_liters'] ?? 0.0;
@@ -71,7 +73,7 @@ class ReportController extends GetxController {
     final String currentDate = getCurrentDate();
     final List<Map<String, dynamic>> result = await database.rawQuery('''
       SELECT SUM(total) AS sum_total FROM transactions
-      WHERE date = ? AND void_bill_flag = 0
+      WHERE date = ? AND bill_type != 3
     ''', [currentDate]);
 
     double sumTotal = result.first['sum_total'] ?? 0.0;

@@ -15,7 +15,6 @@ class BackupRestoreController extends GetxController {
 
   Future<void> backupDatabase() async {
     try {
-      final Directory documentsDirectory = await getApplicationDocumentsDirectory();
       final String dbPath = join(await getDatabasesPath(), dbName);
       final File dbFile = File(dbPath);
 
@@ -25,15 +24,17 @@ class BackupRestoreController extends GetxController {
       }
 
       final String todayDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      final String backupDirectoryPath = join(documentsDirectory.path, 'backups');
-      final Directory backupDirectory = Directory(backupDirectoryPath);
+      final Directory downloadsDirectory = Directory('/storage/emulated/0/Download');
+
+      final String filePath = '${downloadsDirectory.path}/Milkify/backups';
+      final Directory backupDirectory = Directory(filePath);
 
       if (!await backupDirectory.exists()) {
         await backupDirectory.create();
       }
 
       final String backupFileName = 'milkify_db_bkp_$todayDate.db';
-      final String backupFilePath = join(backupDirectoryPath, backupFileName);
+      final String backupFilePath = join(filePath, backupFileName);
 
       await dbFile.copy(backupFilePath);
       Logger.info('Backup created/updated for today: $backupFileName');
@@ -114,9 +115,10 @@ class BackupRestoreController extends GetxController {
 
 
   Future<List<FileSystemEntity>> getBackupFiles() async {
-    final Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    final String backupDirectoryPath = join(documentsDirectory.path, 'backups');
-    final Directory backupDirectory = Directory(backupDirectoryPath);
+    final Directory downloadsDirectory = Directory('/storage/emulated/0/Download');
+
+    final String filePath = '${downloadsDirectory.path}/Milkify/backups';
+    final Directory backupDirectory = Directory(filePath);
 
     if (await backupDirectory.exists()) {
       return backupDirectory.listSync(); // Return list of backup files

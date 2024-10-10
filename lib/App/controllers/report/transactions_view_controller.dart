@@ -30,14 +30,15 @@ class TransactionViewModel extends GetxController {
     // Ensure date range is correctly formatted before querying
     final List<Map<String, dynamic>> maps = await database.query(
       'transactions',
-      where: 'date BETWEEN ? AND ?',
-      whereArgs: [fromDate.value, toDate.value], // 'yyyy-MM-dd' formatted dates
+      where: 'date BETWEEN ? AND ? AND bill_type != ?',
+      whereArgs: [fromDate.value, toDate.value, 3],
     );
 
     transactions.value = List.generate(maps.length, (i) {
       return Transactions.fromMap(maps[i]);
     });
   }
+
 
   // Set the date range
   void setDateRange(DateTime from, DateTime to) {
