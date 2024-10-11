@@ -53,8 +53,7 @@ class ReportPage extends StatelessWidget {
                 value1: controller.totalMembers.value,
                 value2: controller.totalLiters.value,
                 onPressed: () {
-                  //pdf print view and print page where get the member data data by id also full report or custom date
-                  Get.snackbar('Button Clicked', 'Member Report Button was clicked!');
+                  Get.toNamed(AppRoutes.memberLedgerView);
                 },
               )),
 
