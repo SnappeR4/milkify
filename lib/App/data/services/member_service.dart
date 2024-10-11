@@ -137,8 +137,6 @@ class MembersService {
 
   Future<String?> _saveExcelFile(Excel excel) async {
     try {
-      // Request storage permission
-      if (await Permission.storage.request().isGranted) {
         final Directory downloadsDirectory = Directory('/storage/emulated/0/Download');
 
         final String filePath = '${downloadsDirectory.path}/members_export.xlsx';
@@ -151,9 +149,6 @@ class MembersService {
             ..writeAsBytesSync(fileBytes);
           return filePath;
         }
-      } else {
-        Logger.error('Storage permission denied.');
-      }
       return null;
     } catch (e) {
       Logger.error('Error saving Excel file: $e');

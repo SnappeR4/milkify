@@ -6,9 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:milkify/App/routes/app_routes.dart';
 import 'package:milkify/App/utils/logger.dart';
 import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-
 
 class BackupRestoreController extends GetxController {
   final String dbName = 'milkify.db';
@@ -24,21 +22,19 @@ class BackupRestoreController extends GetxController {
       }
 
       final String todayDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      final Directory downloadsDirectory = Directory('/storage/emulated/0/Download');
-
-      final String filePath = '${downloadsDirectory.path}/Milkify/backups';
-      final Directory backupDirectory = Directory(filePath);
-
-      if (!await backupDirectory.exists()) {
-        await backupDirectory.create();
+      final Directory externalDirectory = Directory('/storage/emulated/0/Download');
+      if (!await externalDirectory.exists()) {
+        Logger.error('Download directory does not exist.');
+        return;
       }
 
       final String backupFileName = 'milkify_db_bkp_$todayDate.db';
-      final String backupFilePath = join(filePath, backupFileName);
+      final String backupFilePath = join(externalDirectory.path, backupFileName);
 
+      // Copy the database file to the backup file path
       await dbFile.copy(backupFilePath);
-      Logger.info('Backup created/updated for today: $backupFileName');
-      Get.offAndToNamed(AppRoutes.settings);
+      Logger.info('Backup created/updated for today: $backupFilePath');
+      Get.back();
     } catch (e) {
       Logger.error('Error during backup: $e');
     }
@@ -70,7 +66,6 @@ class BackupRestoreController extends GetxController {
     }
 
     try {
-      final Directory documentsDirectory = await getApplicationDocumentsDirectory();
       final String dbPath = join(await getDatabasesPath(), dbName);
       final File dbFile = File(dbPath);
 
@@ -92,7 +87,7 @@ class BackupRestoreController extends GetxController {
 
         // Restart the app after a short delay to allow the user to read the message
         Future.delayed(const Duration(seconds: 2), () {
-          Get.offAllNamed('/'); // Change this to your initial route
+          Get.offAllNamed(AppRoutes.splash); // Change this to your initial route
         });
       } else {
         Logger.error('Backup file does not exist: $backupFilePath');
@@ -112,18 +107,26 @@ class BackupRestoreController extends GetxController {
     }
   }
 
-
-
   Future<List<FileSystemEntity>> getBackupFiles() async {
-    final Directory downloadsDirectory = Directory('/storage/emulated/0/Download');
+    final Directory externalDirectory = Directory('/storage/emulated/0/Download');
 
-    final String filePath = '${downloadsDirectory.path}/Milkify/backups';
-    final Directory backupDirectory = Directory(filePath);
-
-    if (await backupDirectory.exists()) {
-      return backupDirectory.listSync(); // Return list of backup files
-    } else {
-      return []; // No backups found
+    if (!await externalDirectory.exists()) {
+      Logger.error('Download directory does not exist.');
+      return []; // Return empty list if directory does not exist
     }
+
+    // Filter files that contain "milkify_db_bkp" in their name
+    final List<FileSystemEntity> backupFiles = externalDirectory
+        .listSync()
+        .where((file) => file is File && basename(file.path).contains('milkify_db_bkp'))
+        .toList();
+
+    if (backupFiles.isEmpty) {
+      Logger.info('No backup files found.');
+    } else {
+      Logger.info('Found ${backupFiles.length} backup files.');
+    }
+
+    return backupFiles; // Return list of matching backup files
   }
 }

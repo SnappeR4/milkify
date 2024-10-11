@@ -17,7 +17,6 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        // Show a confirmation dialog when back is pressed
         bool shouldExit = await _showExitConfirmationDialog(context);
         return shouldExit; // Return true if the user wants to exit
       },

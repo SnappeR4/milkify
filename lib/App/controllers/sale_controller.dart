@@ -90,12 +90,12 @@ class SaleController extends GetxController {
     });
   }
 
-  void updateTransaction(String receiptNo, String date, double newLiters, double productRate, String edited_timestamp) async {
+  void updateTransaction(String receiptNo, String date, double newLiters, double productRate, String editedTimestamp) async {
     // Calculate the new total
     double updatedTotal = newLiters * productRate;
 
     // Update the transaction in the database
-    int result = await DatabaseHelper.updateTransaction(receiptNo, date, newLiters, updatedTotal,edited_timestamp);
+    int result = await DatabaseHelper.updateTransaction(receiptNo, date, newLiters, updatedTotal,editedTimestamp);
 
     if (result > 0) {
       await fetchTransactions();
