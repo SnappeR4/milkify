@@ -10,13 +10,13 @@ class DashboardController extends GetxController {
   String get appBarText {
     switch (selectedIndex.value) {
       case 0:
-        return "SETTINGS";
+        return "SETTINGS".tr;
       case 1:
-        return "SALE";
+        return "SALE".tr;
       case 2:
-        return "PAYMENT COLLECTION";
+        return "PAYMENT COLLECTION".tr;
       case 3:
-        return "REPORTS";
+        return "REPORTS".tr;
       default:
         return "Not Set";
     }

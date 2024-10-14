@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:milkify/App/controllers/settings/language_settings_controller.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sqflite/sqflite.dart';
@@ -49,6 +51,10 @@ class SplashController extends GetxController {
 
   void _checkLoginStatus() async {
     backupDatabase("milkify.db");
+    // Load the language settings from the controller
+    final LanguageSettingsController languageController = Get.put(LanguageSettingsController());
+    await languageController.loadSettings(); // Ensure language settings are loaded
+
     // final SharedPreferences prefs = await SharedPreferences.getInstance();
     // final String? userMobileNumber = prefs.getString('user_mobile_number');
     //
@@ -60,6 +66,9 @@ class SplashController extends GetxController {
     // } else {
     // User is registered, navigate to Dashboard
     Future.delayed(const Duration(seconds: 5), () {
+      Logger.info("Language: ${languageController.selectedLanguage.value}");
+      // Update the app locale based on the loaded setting
+      Get.updateLocale(Locale(languageController.selectedLanguage.value));
       Get.offAllNamed(AppRoutes.dashboard);
     });
     // }

@@ -13,6 +13,7 @@ class LanguageSettingsController extends GetxController {
     super.onInit();
     database = await _databaseHelper.database;
     await loadSettings(); // Ensure settings are loaded before continuing
+    Get.snackbar("Language", "Work in Progress");
   }
 
   Future<void> loadSettings() async {
