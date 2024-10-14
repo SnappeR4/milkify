@@ -213,7 +213,7 @@ class TransactionView extends StatelessWidget {
                 pw.Align(
                   alignment: pw.Alignment.center, // Center align the text
                   child: pw.Text(
-                    'Summary of Payment Report',
+                    'Summary of Sale Report',
                     style: pw.TextStyle(
                       font: regularFont,
                       fontSize: 16,

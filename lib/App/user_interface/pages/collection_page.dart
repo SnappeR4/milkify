@@ -36,7 +36,7 @@ class CollectionPage extends StatelessWidget {
                       onTap: () {
                         memberController.selectMemberPayment(member); // Set selected member
                       },
-                      onDelete: () => _confirmDelete(context, member),
+                      onDelete: () => Get.snackbar('Member Delete', 'No Deletion on this Page'),
                     );
                   },
                 ),
@@ -53,6 +53,7 @@ class CollectionPage extends StatelessWidget {
       onChanged: memberController.searchMembers,
       decoration: InputDecoration(
         labelText: 'Search Members',
+        hintText: 'Search Members',
         prefixIcon: const Icon(Icons.search),
         suffixIcon: Obx(() {
           return memberController.searchQuery.value.isNotEmpty
@@ -228,34 +229,6 @@ class CollectionPage extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  void _confirmDelete(BuildContext context, Map<String, dynamic> member) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          title: const Text('Delete Member'),
-          content: Text('Are you sure you want to delete ${member['name']}?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                memberController.deleteMember(member['m_id']);
-                Navigator.of(context).pop(); // Close the dialog after deletion
-              },
-              child: const Text('Delete'),
-            ),
-          ],
-        );
-      },
     );
   }
 }

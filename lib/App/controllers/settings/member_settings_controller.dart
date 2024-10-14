@@ -1,10 +1,12 @@
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:milkify/App/controllers/collection_controller.dart';
 import 'package:milkify/App/controllers/sale_controller.dart';
 import 'package:milkify/App/controllers/sms_controller.dart';
 import 'package:milkify/App/data/models/member.dart';
 import 'package:milkify/App/data/models/transaction.dart';
 import 'package:milkify/App/data/services/member_service.dart';
+import 'package:milkify/App/user_interface/themes/app_theme.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../data/services/database_helper.dart';
@@ -43,12 +45,47 @@ class MemberController extends GetxController {
   final RxMap<String, dynamic> selectedMemberPayment = <String, dynamic>{}.obs;
   final SaleController saleController = Get.find<SaleController>();
   final CollectionController collectionController = Get.find<CollectionController>();
-  // Method to select a member
-  void selectMember(Map<String, dynamic> member) {
+
+  void selectMember(Map<String, dynamic> member) async {
     selectedMember.assignAll(member);
     isMemberSelected.value = true;
-    saleController.fetchTransactions();
+    String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+    List<Map<String, dynamic>> result = await database.query(
+      'transactions', // Your table name
+      where: 'm_id = ? AND date = ?', // The condition for querying
+      whereArgs: [member['m_id'], currentDate], // Arguments to replace the placeholders
+    );
+    // Get current date in the required format
+
+    // Check if transaction exists for the member (assuming you have a fetchTransactionByDateAndMember method)
+    bool isTransactionExist = result.isNotEmpty;
+
+    if (isTransactionExist) {
+      Get.defaultDialog(
+        title: "Transaction Exists",
+        middleText: "A transaction for this member has already been made today. Do you want to continue?",
+        backgroundColor: AppTheme.color1, // Set background color to white
+        textCancel: "Cancel",
+        textConfirm: "Continue",
+        onCancel: () {
+          isMemberSelected.value = false; // Deselect member if canceled
+        },
+        onConfirm: () {
+          saleController.fetchTransactions(); // Continue if confirmed
+          Get.back(); // Close dialog
+        },
+        cancelTextColor: AppTheme.color7,
+        confirmTextColor: AppTheme.color1, // Optional: set text color for confirm button
+        buttonColor: AppTheme.color2, // Set button color based on theme
+        barrierDismissible: false, // Make it mandatory to choose an option
+      );
+    } else {
+      // If no transaction exists, proceed as usual
+      saleController.fetchTransactions();
+    }
   }
+
   Future<void> setMemberSelected(bool selected) async {
     final List<Map<String, dynamic>> memberList = await database.query('members');
     filteredMembers.assignAll(memberList);
