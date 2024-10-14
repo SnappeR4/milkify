@@ -11,6 +11,7 @@ class TransactionViewModel extends GetxController {
   var isPdfGenerated = false.obs;
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
   late Database database;
+
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -39,11 +40,10 @@ class TransactionViewModel extends GetxController {
     });
   }
 
-
   // Set the date range
   void setDateRange(DateTime from, DateTime to) {
     fromDate.value = _formatDate(from); // Format the 'from' date
-    toDate.value = _formatDate(to);     // Format the 'to' date
+    toDate.value = _formatDate(to); // Format the 'to' date
     fetchTransactions(); // Fetch transactions when the date range is set
   }
 }

@@ -11,6 +11,7 @@ class EditDeleteTransactionsController extends GetxController {
   var isPdfGenerated = false.obs;
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
   late Database database;
+
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -30,7 +31,8 @@ class EditDeleteTransactionsController extends GetxController {
     // Ensure date range is correctly formatted before querying
     final List<Map<String, dynamic>> maps = await database.query(
       'transactions',
-      where: 'date BETWEEN ? AND ? AND bill_type != ?', // Add the bill_type != 1 condition
+      where: 'date BETWEEN ? AND ? AND bill_type != ?',
+      // Add the bill_type != 1 condition
       whereArgs: [fromDate.value, toDate.value, 1], // '1' for bill_type
     );
 
@@ -42,7 +44,7 @@ class EditDeleteTransactionsController extends GetxController {
   // Set the date range
   void setDateRange(DateTime from, DateTime to) {
     fromDate.value = _formatDate(from); // Format the 'from' date
-    toDate.value = _formatDate(to);     // Format the 'to' date
+    toDate.value = _formatDate(to); // Format the 'to' date
     fetchTransactions(); // Fetch transactions when the date range is set
   }
 }

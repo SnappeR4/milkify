@@ -6,7 +6,9 @@ import '../../controllers/report_controller.dart';
 
 class ReportPage extends StatelessWidget {
   final ReportController controller = Get.find<ReportController>();
+
   ReportPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     controller.syncReportData();
@@ -18,58 +20,64 @@ class ReportPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Center(
-                child: Text('TODAY SALE REPORT', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                child: Text('TODAY SALE REPORT',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ),
               Obx(() => ReportTableWidget(
-                text1: 'Liters',
-                text2: 'Total',
-                value1: controller.sumLiters.value,
-                value2: controller.sumTotal.value,
-                onPressed: () {
-                  Get.toNamed(AppRoutes.transactionsView);
-                },
-              )),
+                    text1: 'Liters',
+                    text2: 'Total',
+                    value1: controller.sumLiters.value,
+                    value2: controller.sumTotal.value,
+                    onPressed: () {
+                      Get.toNamed(AppRoutes.transactionsView);
+                    },
+                  )),
               const SizedBox(height: 10),
               const Center(
-                child: Text('TODAY PAYMENT REPORT', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                child: Text('TODAY PAYMENT REPORT',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ),
               Obx(() => ReportTableWidget(
-                text1: 'Receipts',
-                text2: 'Payments',
-                value1: controller.recordCount.value,
-                value2: controller.sumPaidAmount.value,
-                onPressed: () {
-                  Get.toNamed(AppRoutes.paymentView);
-                },
-              )),
-
+                    text1: 'Receipts',
+                    text2: 'Payments',
+                    value1: controller.recordCount.value,
+                    value2: controller.sumPaidAmount.value,
+                    onPressed: () {
+                      Get.toNamed(AppRoutes.paymentView);
+                    },
+                  )),
               const SizedBox(height: 10),
               const Center(
-                child: Text('MEMBER REPORT', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                child: Text('MEMBER REPORT',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ),
               Obx(() => ReportTableWidget(
-                text1: 'Members',
-                text2: 'Liters',
-                value1: controller.totalMembers.value,
-                value2: controller.totalLiters.value,
-                onPressed: () {
-                  Get.toNamed(AppRoutes.memberLedgerView);
-                },
-              )),
-
+                    text1: 'Members',
+                    text2: 'Liters',
+                    value1: controller.totalMembers.value,
+                    value2: controller.totalLiters.value,
+                    onPressed: () {
+                      Get.toNamed(AppRoutes.memberLedgerView);
+                    },
+                  )),
               const SizedBox(height: 10),
               const Center(
-                child: Text('EDITED REPORT', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                child: Text('EDITED REPORT',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ),
               Obx(() => ReportTableWidget(
-                text1: 'Edited',
-                text2: 'Deleted',
-                value1: controller.editedCount.value,
-                value2: controller.deletedCount.value,
-                onPressed: () {
-                  Get.toNamed(AppRoutes.editDeleteView);
-                },
-              )),
+                    text1: 'Edited',
+                    text2: 'Deleted',
+                    value1: controller.editedCount.value,
+                    value2: controller.deletedCount.value,
+                    onPressed: () {
+                      Get.toNamed(AppRoutes.editDeleteView);
+                    },
+                  )),
             ],
           ),
         ),

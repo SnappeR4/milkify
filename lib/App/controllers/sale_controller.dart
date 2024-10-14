@@ -19,7 +19,8 @@ class SaleController extends GetxController {
   Rx<Product?> selectedProduct = Rx<Product?>(null);
 
   RxList<Member> allMembers = <Member>[].obs; // List to hold all members
-  RxList<Member> filteredMembers = <Member>[].obs; // List to hold filtered members
+  RxList<Member> filteredMembers =
+      <Member>[].obs; // List to hold filtered members
   final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   late Database database;
 
@@ -32,6 +33,7 @@ class SaleController extends GetxController {
   Future<void> fetchTransactions() async {
     transactions.value = await DatabaseHelper.getTransactions();
   }
+
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -40,6 +42,7 @@ class SaleController extends GetxController {
     fetchProductRatesFromDB();
     await fetchTransactions();
   }
+
 // Fetch product rates from the database and store them in variables
   Future<void> fetchProductRatesFromDB() async {
     final List<Map<String, dynamic>> products = await database.query('product');
@@ -60,11 +63,14 @@ class SaleController extends GetxController {
       }
     }
   }
+
   // Fetch all members from the database
   void fetchMembers() async {
-    final List<Map<String, dynamic>> memberList = await database.query('members');
+    final List<Map<String, dynamic>> memberList =
+        await database.query('members');
     Logger.info(memberList.toString());
-    allMembers.assignAll(memberList.map((memberData) => Member.fromMap(memberData)).toList());
+    allMembers.assignAll(
+        memberList.map((memberData) => Member.fromMap(memberData)).toList());
   }
 
   // Function to search members
@@ -72,10 +78,13 @@ class SaleController extends GetxController {
     filteredMembers.assignAll(
       allMembers.where((member) {
         final name = member.name.toLowerCase();
-        final id = member.id.toString(); // Assuming 'id' is an integer or string
+        final id =
+            member.id.toString(); // Assuming 'id' is an integer or string
         final mobileNumber = member.mobileNumber.toString();
 
-        return name.contains(query.toLowerCase()) || id.contains(query) || mobileNumber.contains(query);
+        return name.contains(query.toLowerCase()) ||
+            id.contains(query) ||
+            mobileNumber.contains(query);
       }).toList(),
     );
   }
@@ -90,12 +99,14 @@ class SaleController extends GetxController {
     });
   }
 
-  void updateTransaction(String receiptNo, String date, double newLiters, double productRate, String editedTimestamp) async {
+  void updateTransaction(String receiptNo, String date, double newLiters,
+      double productRate, String editedTimestamp) async {
     // Calculate the new total
     double updatedTotal = newLiters * productRate;
 
     // Update the transaction in the database
-    int result = await DatabaseHelper.updateTransaction(receiptNo, date, newLiters, updatedTotal,editedTimestamp);
+    int result = await DatabaseHelper.updateTransaction(
+        receiptNo, date, newLiters, updatedTotal, editedTimestamp);
 
     if (result > 0) {
       await fetchTransactions();
@@ -109,8 +120,10 @@ class SaleController extends GetxController {
     }
   }
 
-  static Future<int> deleteTransaction(String receiptNo, String date, String editedTimestamp) async {
-    return await DatabaseHelper.deleteTransaction(receiptNo, date, editedTimestamp);
+  static Future<int> deleteTransaction(
+      String receiptNo, String date, String editedTimestamp) async {
+    return await DatabaseHelper.deleteTransaction(
+        receiptNo, date, editedTimestamp);
   }
 
   double calculateTotal() {
@@ -136,6 +149,7 @@ class SaleController extends GetxController {
   void updateLiters() {
     liters.value = double.tryParse(litersController.text) ?? 0.0;
   }
+
   @override
   void onClose() {
     litersController.dispose();

@@ -7,9 +7,11 @@ import 'package:path/path.dart';
 
 class DatabaseHelper {
   static const _databaseName = "milkify.db";
-  static const _databaseVersion = 1; // Update this number when changing the schema
+  static const _databaseVersion =
+      1; // Update this number when changing the schema
 
   DatabaseHelper._privateConstructor();
+
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
 
   static Database? _database;
@@ -22,7 +24,8 @@ class DatabaseHelper {
 
   _initDatabase() async {
     String path = join(await getDatabasesPath(), _databaseName);
-    return await openDatabase(path, version: _databaseVersion, onCreate: _onCreate, onUpgrade: _onUpgrade);
+    return await openDatabase(path,
+        version: _databaseVersion, onCreate: _onCreate, onUpgrade: _onUpgrade);
   }
 
   Future _onCreate(Database db, int version) async {
@@ -127,24 +130,26 @@ class DatabaseHelper {
       // await db.execute('ALTER TABLE profile ADD COLUMN new_column_name TEXT;');
     }
   }
+
   static Future<Map<String, Object?>> getSettings() async {
-      final List<Map<String, Object?>> settingsList = await _database!.query("settings");
-      Map<String, Object?> settings = {};
+    final List<Map<String, Object?>> settingsList =
+        await _database!.query("settings");
+    Map<String, Object?> settings = {};
 
-      if (settingsList.isNotEmpty) {
-        Logger.info("Settings loaded: ${settingsList.toString()}");
+    if (settingsList.isNotEmpty) {
+      Logger.info("Settings loaded: ${settingsList.toString()}");
 
-        // Extract key-value pairs directly from the map
-        for (var setting in settingsList) {
-          setting.forEach((key, value) {
-            settings[key] = value;  // Add each key-value pair to the settings map
-          });
-        }
-      } else {
-        Logger.info("No settings found in the database.");
+      // Extract key-value pairs directly from the map
+      for (var setting in settingsList) {
+        setting.forEach((key, value) {
+          settings[key] = value; // Add each key-value pair to the settings map
+        });
       }
+    } else {
+      Logger.info("No settings found in the database.");
+    }
 
-      return settings;
+    return settings;
   }
 
   static Future<void> saveSettings(String settingColumn, dynamic value) async {
@@ -167,7 +172,8 @@ class DatabaseHelper {
 
   Future<void> insertProfile(Profile profile) async {
     final db = await database;
-    await db.insert('profile', profile.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+    await db.insert('profile', profile.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<void> updateProfile(Profile profile) async {
@@ -225,7 +231,8 @@ class DatabaseHelper {
     }).toList();
   }
 
-  static Future<int> updateTransaction(String receiptNo, String date, double liters, double total, String editedTimestamp) async {
+  static Future<int> updateTransaction(String receiptNo, String date,
+      double liters, double total, String editedTimestamp) async {
     // Fetch the original transaction amount
     List<Map<String, dynamic>> originalTransaction = await _database!.query(
       'transactions',
@@ -244,8 +251,8 @@ class DatabaseHelper {
         {
           'liters': liters,
           'total': total,
-          'bill_type' : '2',
-          'edited_timestamp' : editedTimestamp
+          'bill_type': '2',
+          'edited_timestamp': editedTimestamp
         },
         where: 'receipt_no = ? AND date = ?',
         whereArgs: [receiptNo, date],
@@ -263,7 +270,9 @@ class DatabaseHelper {
       return 0;
     }
   }
-  static Future<int> deleteTransaction(String receiptNo, String date, String editedTimestamp) async {
+
+  static Future<int> deleteTransaction(
+      String receiptNo, String date, String editedTimestamp) async {
     // Update the bill_type to 3 and set the edited_timestamp
     return await _database!.update(
       'transactions',
@@ -294,5 +303,4 @@ class DatabaseHelper {
 //   return await db.query('society_details');
 //   }
 //   }
-
 }

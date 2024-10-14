@@ -5,16 +5,19 @@ import '../../../../controllers/settings/member_settings_controller.dart';
 class EditMemberPage extends StatelessWidget {
   EditMemberPage({super.key});
 
-  final Map<String, dynamic> member = Get.arguments; // Get the member data passed to the page
+  final Map<String, dynamic> member =
+      Get.arguments; // Get the member data passed to the page
 
-  final MemberController memberSettingsController = Get.find<MemberController>();
+  final MemberController memberSettingsController =
+      Get.find<MemberController>();
 
   // Text controllers for editing member details
   final TextEditingController memberNameController = TextEditingController();
   final TextEditingController mobileNumberController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController recentlyPaidController = TextEditingController();
-  final TextEditingController currentBalanceController = TextEditingController();
+  final TextEditingController currentBalanceController =
+      TextEditingController();
   final TextEditingController litersController = TextEditingController();
 
   // Dropdown values for milk type
@@ -43,10 +46,13 @@ class EditMemberPage extends StatelessWidget {
             children: [
               _buildNonEditableField('Member ID', member['m_id'].toString()),
               _buildTextField('Name', memberNameController, isMandatory: true),
-              _buildTextField('Mobile Number', mobileNumberController, isMandatory: true),
+              _buildTextField('Mobile Number', mobileNumberController,
+                  isMandatory: true),
               _buildTextField('Address', addressController),
-              _buildDropdownField('Milk Type', selectedMilkType), // Dropdown for milk type
-              _buildTextField('Liters of Milk', litersController, isMandatory: true),
+              _buildDropdownField('Milk Type', selectedMilkType),
+              // Dropdown for milk type
+              _buildTextField('Liters of Milk', litersController,
+                  isMandatory: true),
               const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: _updateMember,
@@ -114,28 +120,29 @@ class EditMemberPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Obx(() => DropdownButtonFormField<String>(
-        value: selectedValue.value.isNotEmpty ? selectedValue.value : null,
-        items: milkTypes.map((String type) {
-          return DropdownMenuItem<String>(
-            value: type,
-            child: Text(type),
-          );
-        }).toList(),
-        decoration: InputDecoration(
-          labelText: '$label *', // Mark milk type as mandatory
-          border: const OutlineInputBorder(),
-        ),
-        onChanged: (value) {
-          if (value != null) {
-            selectedValue.value = value;
-          }
-        },
-      )),
+            value: selectedValue.value.isNotEmpty ? selectedValue.value : null,
+            items: milkTypes.map((String type) {
+              return DropdownMenuItem<String>(
+                value: type,
+                child: Text(type),
+              );
+            }).toList(),
+            decoration: InputDecoration(
+              labelText: '$label *', // Mark milk type as mandatory
+              border: const OutlineInputBorder(),
+            ),
+            onChanged: (value) {
+              if (value != null) {
+                selectedValue.value = value;
+              }
+            },
+          )),
     );
   }
 
   // Helper widget for building text fields
-  Widget _buildTextField(String label, TextEditingController controller, {bool isMandatory = false}) {
+  Widget _buildTextField(String label, TextEditingController controller,
+      {bool isMandatory = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
@@ -144,7 +151,9 @@ class EditMemberPage extends StatelessWidget {
           labelText: label + (isMandatory ? ' *' : ''),
           border: const OutlineInputBorder(),
         ),
-        keyboardType: (label == 'Recently Paid' || label == 'Current Balance' || label == 'Liters of Milk')
+        keyboardType: (label == 'Recently Paid' ||
+                label == 'Current Balance' ||
+                label == 'Liters of Milk')
             ? const TextInputType.numberWithOptions(decimal: true)
             : TextInputType.text,
       ),

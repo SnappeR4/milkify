@@ -9,15 +9,18 @@ import 'package:sqflite/sqflite.dart';
 
 class MemberReportController extends GetxController {
   final RxList<Map<String, dynamic>> members = <Map<String, dynamic>>[].obs;
-  final RxList<Map<String, dynamic>> filteredMembers = <Map<String, dynamic>>[].obs;
+  final RxList<Map<String, dynamic>> filteredMembers =
+      <Map<String, dynamic>>[].obs;
   final RxMap<String, dynamic> selectedMember = <String, dynamic>{}.obs;
   var isMemberSelected = false.obs;
   final RxString searchQuery = ''.obs;
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
   late Database database;
   var isPdfGenerated = false.obs;
-  var saleTransactions = <Transactions>[].obs; // Observable list of sale transactions
-  var paymentTransactions = <MemberPayment>[].obs; // Observable list of payment transactions
+  var saleTransactions =
+      <Transactions>[].obs; // Observable list of sale transactions
+  var paymentTransactions =
+      <MemberPayment>[].obs; // Observable list of payment transactions
   var fromDate = ''.obs; // Observable from date
   var toDate = ''.obs; // Observable to date
   var mId = 0.obs; // Observable member ID
@@ -27,6 +30,7 @@ class MemberReportController extends GetxController {
     database = await _dbHelper.database;
     fetchMembers();
   }
+
   void selectMember(Map<String, dynamic> member) {
     setMemberId(member['m_id']);
     DateTime currentDate = DateTime.now();
@@ -37,20 +41,27 @@ class MemberReportController extends GetxController {
     selectedMember.assignAll(member);
     isMemberSelected.value = true;
   }
+
   Future<void> setMemberSelected(bool selected) async {
-    final List<Map<String, dynamic>> memberList = await database.query('members');
+    final List<Map<String, dynamic>> memberList =
+        await database.query('members');
     filteredMembers.assignAll(memberList);
     isMemberSelected.value = selected;
   }
+
   Future<void> fetchMembers() async {
-    final List<Map<String, dynamic>> memberList = await database.query('members');
+    final List<Map<String, dynamic>> memberList =
+        await database.query('members');
     members.assignAll(memberList);
     searchMembers(searchQuery.value); // Apply the search if any
   }
+
   Future<void> syncMembers() async {
-    final List<Map<String, dynamic>> memberList = await database.query('members');
+    final List<Map<String, dynamic>> memberList =
+        await database.query('members');
     filteredMembers.assignAll(memberList);
   }
+
   void searchMembers(String query) {
     searchQuery.value = query;
 
@@ -61,7 +72,8 @@ class MemberReportController extends GetxController {
       filteredMembers.assignAll(
         members.where((member) {
           final name = member['name'].toLowerCase();
-          final id = member['m_id'].toString();  // Assuming 'm_id' is an integer or string
+          final id = member['m_id']
+              .toString(); // Assuming 'm_id' is an integer or string
           final mobileNumber = member['mobile_number'].toString();
 
           // Check if the query matches either name, id, or mobile number
@@ -86,8 +98,9 @@ class MemberReportController extends GetxController {
         [memberId, fromDate.value, toDate.value]);
 
     if (result.isNotEmpty) {
-      if(result.first["totalPaidAmount"].toString().isNotEmpty){
-        double result1 = double.tryParse(result.first["totalPaidAmount"].toString()) ?? 0.0;
+      if (result.first["totalPaidAmount"].toString().isNotEmpty) {
+        double result1 =
+            double.tryParse(result.first["totalPaidAmount"].toString()) ?? 0.0;
         return result1;
       } else {
         return 0.0;
@@ -103,8 +116,9 @@ class MemberReportController extends GetxController {
         [memberId, fromDate.value, toDate.value]);
 
     if (result.isNotEmpty) {
-      if(result.first["totalBillAmount"].toString().isNotEmpty){
-        double result1 = double.tryParse(result.first["totalBillAmount"].toString()) ?? 0.0;
+      if (result.first["totalBillAmount"].toString().isNotEmpty) {
+        double result1 =
+            double.tryParse(result.first["totalBillAmount"].toString()) ?? 0.0;
         return result1;
       } else {
         return 0.0;
@@ -112,7 +126,6 @@ class MemberReportController extends GetxController {
     }
     return 0.0;
   }
-
 
   //pdf data
   String _formatDate(DateTime date) {
@@ -154,7 +167,7 @@ class MemberReportController extends GetxController {
   // Set the date range
   void setDateRange(DateTime from, DateTime to) {
     fromDate.value = _formatDate(from); // Format the 'from' date
-    toDate.value = _formatDate(to);     // Format the 'to' date
+    toDate.value = _formatDate(to); // Format the 'to' date
     fetchTransactions(); // Fetch transactions when the date range is set
   }
 

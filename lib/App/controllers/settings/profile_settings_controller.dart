@@ -21,7 +21,8 @@ class ProfileSettingsController extends GetxController {
     if (storedProfile != null) {
       profile.value = storedProfile;
       if (storedProfile.imagePath != null) {
-        profileImage.value = File(storedProfile.imagePath!); // Load the saved image
+        profileImage.value =
+            File(storedProfile.imagePath!); // Load the saved image
       }
       isEditing.value = true;
     }

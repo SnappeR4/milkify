@@ -4,9 +4,11 @@ import 'package:get/get.dart';
 import '../../../controllers/settings/collection_settings_controller.dart';
 
 class CollectionSettingsPage extends StatelessWidget {
-  final CollectionSettingsController controller = Get.find<CollectionSettingsController>();
+  final CollectionSettingsController controller =
+      Get.find<CollectionSettingsController>();
 
   CollectionSettingsPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

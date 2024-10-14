@@ -15,7 +15,8 @@ class SmsService {
     return await BackgroundSms.isSupportCustomSim;
   }
 
-  Future<SmsStatus> sendMessage(String phoneNumber, String message, {int? simSlot}) async {
+  Future<SmsStatus> sendMessage(String phoneNumber, String message,
+      {int? simSlot}) async {
     var result = await BackgroundSms.sendMessage(
       phoneNumber: phoneNumber,
       message: message,

@@ -18,7 +18,7 @@ class SplashController extends GetxController {
     Future.delayed(const Duration(seconds: 1), () {
       isLoading.value = false;
     });
-    if(await _getStoragePermission()) {
+    if (await _getStoragePermission()) {
       _checkLoginStatus();
     }
   }
@@ -29,23 +29,24 @@ class SplashController extends GetxController {
     AndroidDeviceInfo android = await plugin.androidInfo;
     if (android.version.sdkInt < 33) {
       if (await Permission.storage.request().isGranted) {
-          permissionGranted = true;
+        permissionGranted = true;
       } else if (await Permission.storage.request().isPermanentlyDenied) {
         await openAppSettings();
       } else if (await Permission.audio.request().isDenied) {
-          permissionGranted = false;
+        permissionGranted = false;
       }
     } else {
       if (await Permission.photos.request().isGranted) {
-          permissionGranted = true;
+        permissionGranted = true;
       } else if (await Permission.photos.request().isPermanentlyDenied) {
         await openAppSettings();
       } else if (await Permission.photos.request().isDenied) {
-          permissionGranted = false;
+        permissionGranted = false;
       }
     }
     return permissionGranted;
   }
+
   void _checkLoginStatus() async {
     backupDatabase("milkify.db");
     // final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -57,10 +58,10 @@ class SplashController extends GetxController {
     //     Get.offAllNamed(AppRoutes.register);
     //   });
     // } else {
-      // User is registered, navigate to Dashboard
-      Future.delayed(const Duration(seconds: 5), () {
-        Get.offAllNamed(AppRoutes.dashboard);
-      });
+    // User is registered, navigate to Dashboard
+    Future.delayed(const Duration(seconds: 5), () {
+      Get.offAllNamed(AppRoutes.dashboard);
+    });
     // }
   }
 
@@ -76,14 +77,16 @@ class SplashController extends GetxController {
       }
 
       final String todayDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      final Directory downloadsDirectory = Directory('/storage/emulated/0/Download');
+      final Directory downloadsDirectory =
+          Directory('/storage/emulated/0/Download');
       if (!await downloadsDirectory.exists()) {
         Logger.error('Download directory does not exist.');
         return;
       }
       // Use external storage for backup
       final String backupFileName = 'milkify_db_bkp_$todayDate.db';
-      final File backupFile = File('${downloadsDirectory.path}/$backupFileName');
+      final File backupFile =
+          File('${downloadsDirectory.path}/$backupFileName');
 
       // Copy the database file to the backup file path
       await dbFile.copy(backupFile.path);

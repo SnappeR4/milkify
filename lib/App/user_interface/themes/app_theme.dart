@@ -14,14 +14,19 @@ class AppTheme {
   // Define the light theme
   static final ThemeData lightTheme = ThemeData(
     colorScheme: const ColorScheme.light(
-      primary: color2, // #30b2e4
-      secondary: color5, // #eaf4f9
-      surface: color3, // #b1d2e1
-      onPrimary: Colors.white, // Text color on primary
+      primary: color2,
+      // #30b2e4
+      secondary: color5,
+      // #eaf4f9
+      surface: color3,
+      // #b1d2e1
+      onPrimary: Colors.white,
+      // Text color on primary
       onSecondary: Colors.white,
       onSurface: Colors.black,
     ),
-    scaffoldBackgroundColor: Colors.white, // #eaf4f9
+    scaffoldBackgroundColor: Colors.white,
+    // #eaf4f9
     appBarTheme: const AppBarTheme(
       backgroundColor: color2, // #30b2e4
       titleTextStyle: TextStyle(
@@ -38,9 +43,12 @@ class AppTheme {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.all<Color>(color2), // #30b2e4
-        foregroundColor: WidgetStateProperty.all<Color>(Colors.white), // Text color
-        shadowColor: WidgetStateProperty.all<Color>(color5), // #929e47
+        backgroundColor: WidgetStateProperty.all<Color>(color2),
+        // #30b2e4
+        foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+        // Text color
+        shadowColor: WidgetStateProperty.all<Color>(color5),
+        // #929e47
         textStyle: WidgetStateProperty.all<TextStyle>(
           const TextStyle(
             fontWeight: FontWeight.bold,

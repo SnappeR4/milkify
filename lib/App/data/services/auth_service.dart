@@ -10,7 +10,8 @@ class AuthService {
     required Function errorStep,
     required Function nextStep,
   }) async {
-    await _firebaseAuth.verifyPhoneNumber(
+    await _firebaseAuth
+        .verifyPhoneNumber(
       timeout: const Duration(seconds: 30),
       phoneNumber: "+91$phone",
       verificationCompleted: (phoneAuthCredential) async {
@@ -26,20 +27,23 @@ class AuthService {
       codeAutoRetrievalTimeout: (verificationId) async {
         return;
       },
-    ).onError((error, stackTrace) {
+    )
+        .onError((error, stackTrace) {
       errorStep();
     });
   }
 
   static Future loginWithOtp({required String otp}) async {
-    final cred = PhoneAuthProvider.credential(verificationId: verifyId, smsCode: otp);
+    final cred =
+        PhoneAuthProvider.credential(verificationId: verifyId, smsCode: otp);
 
     try {
       final user = await _firebaseAuth.signInWithCredential(cred);
       if (user.user != null) {
         // Save mobile number in SharedPreferences
         final SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('user_mobile_number', user.user!.phoneNumber ?? '');
+        await prefs.setString(
+            'user_mobile_number', user.user!.phoneNumber ?? '');
 
         return "Success";
       } else {

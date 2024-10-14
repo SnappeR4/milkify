@@ -70,10 +70,12 @@ class RegisterController extends GetxController {
 
   // Handle after OTP is submitted
   void handleSubmit() {
-    if (formKey.currentState!.validate()) {  // Use the existing formKey
+    if (formKey.currentState!.validate()) {
+      // Use the existing formKey
       AuthService.loginWithOtp(otp: otpController.text).then((value) async {
         if (value == "Success") {
-          Get.offAllNamed(AppRoutes.dashboard); // Navigate to Dashboard using GetX
+          Get.offAllNamed(
+              AppRoutes.dashboard); // Navigate to Dashboard using GetX
         } else {
           Get.back(); // Close the dialog
           Get.snackbar(

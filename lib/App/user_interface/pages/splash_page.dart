@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import '../../controllers/splash_controller.dart';
 import '../widgets/lottie_animation.dart';
+
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
 
@@ -19,13 +20,12 @@ class SplashPage extends StatelessWidget {
           return controller.isLoading.value
               ? const CircularProgressIndicator()
               : LottieAnimation(
-            assetPath: 'assets/lotties/splash_animation.json',
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.width,
-          );
+                  assetPath: 'assets/lotties/splash_animation.json',
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.width,
+                );
         }),
       ),
     );
   }
 }
-

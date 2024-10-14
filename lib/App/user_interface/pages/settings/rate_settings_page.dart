@@ -3,7 +3,8 @@ import 'package:get/get.dart';
 import 'package:milkify/App/controllers/settings/rate_settings_controller.dart';
 
 class RateSettingPage extends StatelessWidget {
-  final RateSettingController rateController = Get.find<RateSettingController>();
+  final RateSettingController rateController =
+      Get.find<RateSettingController>();
 
   RateSettingPage({super.key});
 
@@ -24,7 +25,8 @@ class RateSettingPage extends StatelessWidget {
             itemCount: rateController.products.length,
             itemBuilder: (context, index) {
               final product = rateController.products[index];
-              final TextEditingController rateControllerField = TextEditingController(
+              final TextEditingController rateControllerField =
+                  TextEditingController(
                 text: product.rate.toString(),
               );
 
@@ -56,7 +58,9 @@ class RateSettingPage extends StatelessWidget {
                         children: [
                           ElevatedButton(
                             onPressed: () {
-                              double newRate = double.tryParse(rateControllerField.text) ?? 0.0;
+                              double newRate =
+                                  double.tryParse(rateControllerField.text) ??
+                                      0.0;
                               rateController.updateRate(product.id, newRate);
 
                               Get.snackbar(

@@ -14,7 +14,8 @@ class RegisterPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        child: SizedBox(//add ? and loading here on otp submit
+        child: SizedBox(
+          //add ? and loading here on otp submit
           height: MediaQuery.of(context).size.height,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,7 +38,8 @@ class RegisterPage extends StatelessWidget {
                       children: [
                         Text(
                           "Welcome To ",
-                          style: TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
+                          style: TextStyle(
+                              fontSize: 32, fontWeight: FontWeight.w700),
                         ),
                       ],
                     ),
@@ -46,7 +48,8 @@ class RegisterPage extends StatelessWidget {
                       children: [
                         Text(
                           "Milkify👋",
-                          style: TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
+                          style: TextStyle(
+                              fontSize: 32, fontWeight: FontWeight.w700),
                         ),
                       ],
                     ),
@@ -72,8 +75,7 @@ class RegisterPage extends StatelessWidget {
                         },
                       ),
                     ),
-                    const SizedBox(height: 15
-                    ),
+                    const SizedBox(height: 15),
                     SizedBox(
                       height: 50,
                       width: double.infinity,

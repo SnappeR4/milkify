@@ -13,15 +13,19 @@ class CollectionController extends GetxController {
   var payments = <MemberPayment>[].obs;
   final SmsController smsController = Get.put(SmsController());
   RxMap<String, Object?> settings = <String, Object?>{}.obs;
+
   @override
   Future<void> onInit() async {
     super.onInit();
     database = await _dbHelper.database;
     loadSettings();
   }
+
   Future<void> loadSettings() async {
-    settings.value = await DatabaseHelper.getSettings(); // Fetch settings from database
+    settings.value =
+        await DatabaseHelper.getSettings(); // Fetch settings from database
   }
+
   Future<void> savePayment({
     required int memberId,
     required double paidAmount,
@@ -29,9 +33,8 @@ class CollectionController extends GetxController {
     required String mobileNumber,
   }) async {
     // Fetch the last bill number from the database
-    final List<Map<String, dynamic>> lastBill = await database.rawQuery(
-      'SELECT MAX(bill_no) as last_bill_no FROM member_payment'
-    );
+    final List<Map<String, dynamic>> lastBill = await database
+        .rawQuery('SELECT MAX(bill_no) as last_bill_no FROM member_payment');
 
     // If there are no previous bills, set it to 1; otherwise, increment by 1
     int billNo = (lastBill.isNotEmpty && lastBill[0]['last_bill_no'] != null)
@@ -40,30 +43,30 @@ class CollectionController extends GetxController {
 
     // Prepare the new payment data
     final payment = MemberPayment(
-      billNo: billNo, // New bill number
+      billNo: billNo,
+      // New bill number
       memberId: memberId,
       paidAmount: paidAmount,
       currentBalance: currentBalance - paidAmount,
-      date: DateTime.now().toIso8601String().split('T')[0], // Only the date
+      date: DateTime.now().toIso8601String().split('T')[0],
+      // Only the date
       time: DateTime.now().toIso8601String().split('T')[1], // Only the time
     );
 
     // Insert payment into the database
-    await database.insert(
-      'member_payment',
-      payment.toMap()
-    );
+    await database.insert('member_payment', payment.toMap());
 
     // Update the member's c_balance by adding the paid amount
     await database.execute('''
     UPDATE members SET c_balance = c_balance + ? WHERE m_id = ?
   ''', [paidAmount, memberId]);
 
-    if (settings['sms_enable']==1) {
+    if (settings['sms_enable'] == 1) {
       double totalBalance = currentBalance - paidAmount;
       String tot = totalBalance.toString();
-      String message = '''Bill No : $billNo\nPaid     : $paidAmount\nC.Balance: $tot''';
-      if(mobileNumber.length==10) {
+      String message =
+          '''Bill No : $billNo\nPaid     : $paidAmount\nC.Balance: $tot''';
+      if (mobileNumber.length == 10) {
         String phoneNumber = "+91$mobileNumber";
         smsController.sendSms(
           phoneNumber,
@@ -84,7 +87,8 @@ class CollectionController extends GetxController {
       whereArgs: [memberId],
     );
 
-    payments.value = paymentRecords.map((map) => MemberPayment.fromMap(map)).toList();
+    payments.value =
+        paymentRecords.map((map) => MemberPayment.fromMap(map)).toList();
   }
 
   // Get total remaining balance for a member
@@ -127,12 +131,14 @@ class CollectionController extends GetxController {
 
     // Get the sum of the total column in transactions table for the given memberId
     try {
-      final List<Map<String, dynamic>> transactionResult = await database.rawQuery(
+      final List<Map<String, dynamic>> transactionResult =
+          await database.rawQuery(
         'SELECT SUM(total) as total FROM transactions WHERE m_id = ?',
         [memberId],
       );
 
-      if (transactionResult.isNotEmpty && transactionResult[0]['total'] != null) {
+      if (transactionResult.isNotEmpty &&
+          transactionResult[0]['total'] != null) {
         totalTransactionAmount = transactionResult[0]['total'] as double;
       }
     } catch (e) {

@@ -22,14 +22,16 @@ class BackupRestoreController extends GetxController {
       }
 
       final String todayDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      final Directory externalDirectory = Directory('/storage/emulated/0/Download');
+      final Directory externalDirectory =
+          Directory('/storage/emulated/0/Download');
       if (!await externalDirectory.exists()) {
         Logger.error('Download directory does not exist.');
         return;
       }
 
       final String backupFileName = 'milkify_db_bkp_$todayDate.db';
-      final String backupFilePath = join(externalDirectory.path, backupFileName);
+      final String backupFilePath =
+          join(externalDirectory.path, backupFileName);
 
       // Copy the database file to the backup file path
       await dbFile.copy(backupFilePath);
@@ -43,22 +45,24 @@ class BackupRestoreController extends GetxController {
   Future<void> restoreDatabase(String backupFilePath) async {
     // Ask for user confirmation before proceeding
     final bool confirmed = await Get.dialog<bool>(
-      AlertDialog(
-        backgroundColor: Colors.white,
-        title: const Text('Confirm Restore'),
-        content: const Text('Are you sure you want to restore the database? This will replace the current database.'),
-        actions: [
-          TextButton(
-            onPressed: () => Get.back(result: false), // User cancels
-            child: const Text('Cancel'),
+          AlertDialog(
+            backgroundColor: Colors.white,
+            title: const Text('Confirm Restore'),
+            content: const Text(
+                'Are you sure you want to restore the database? This will replace the current database.'),
+            actions: [
+              TextButton(
+                onPressed: () => Get.back(result: false), // User cancels
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Get.back(result: true), // User confirms
+                child: const Text('Confirm'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => Get.back(result: true), // User confirms
-            child: const Text('Confirm'),
-          ),
-        ],
-      ),
-    ) ?? false; // Default to false if dialog is dismissed
+        ) ??
+        false; // Default to false if dialog is dismissed
 
     if (!confirmed) {
       Logger.info('Database restore canceled by user.');
@@ -87,7 +91,8 @@ class BackupRestoreController extends GetxController {
 
         // Restart the app after a short delay to allow the user to read the message
         Future.delayed(const Duration(seconds: 2), () {
-          Get.offAllNamed(AppRoutes.splash); // Change this to your initial route
+          Get.offAllNamed(
+              AppRoutes.splash); // Change this to your initial route
         });
       } else {
         Logger.error('Backup file does not exist: $backupFilePath');
@@ -108,7 +113,8 @@ class BackupRestoreController extends GetxController {
   }
 
   Future<List<FileSystemEntity>> getBackupFiles() async {
-    final Directory externalDirectory = Directory('/storage/emulated/0/Download');
+    final Directory externalDirectory =
+        Directory('/storage/emulated/0/Download');
 
     if (!await externalDirectory.exists()) {
       Logger.error('Download directory does not exist.');
@@ -118,7 +124,8 @@ class BackupRestoreController extends GetxController {
     // Filter files that contain "milkify_db_bkp" in their name
     final List<FileSystemEntity> backupFiles = externalDirectory
         .listSync()
-        .where((file) => file is File && basename(file.path).contains('milkify_db_bkp'))
+        .where((file) =>
+            file is File && basename(file.path).contains('milkify_db_bkp'))
         .toList();
 
     if (backupFiles.isEmpty) {

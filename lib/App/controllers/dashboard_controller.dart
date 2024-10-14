@@ -2,11 +2,13 @@ import 'package:get/get.dart';
 
 class DashboardController extends GetxController {
   var selectedIndex = 1.obs;
+
   void changeTabIndex(int index) {
     selectedIndex.value = index;
   }
+
   String get appBarText {
-    switch(selectedIndex.value){
+    switch (selectedIndex.value) {
       case 0:
         return "SETTINGS";
       case 1:

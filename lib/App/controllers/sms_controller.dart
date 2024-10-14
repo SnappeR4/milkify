@@ -37,7 +37,8 @@ class SmsController extends GetxController {
 
       SmsStatus result;
       if (isCustomSimSupported.value) {
-        result = await _smsService.sendMessage(phoneNumber, message, simSlot: 1);
+        result =
+            await _smsService.sendMessage(phoneNumber, message, simSlot: 1);
       } else {
         result = await _smsService.sendMessage(phoneNumber, message);
       }

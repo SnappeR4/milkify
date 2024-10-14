@@ -7,7 +7,8 @@ class ReportTableWidget extends StatelessWidget {
   final String value2;
   final VoidCallback onPressed;
 
-  const ReportTableWidget({super.key, 
+  const ReportTableWidget({
+    super.key,
     required this.text1,
     required this.text2,
     required this.value1,

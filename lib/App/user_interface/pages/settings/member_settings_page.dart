@@ -53,20 +53,21 @@ class MemberListPage extends StatelessWidget {
             const SizedBox(height: 16.0),
             Expanded(
               child: Obx(
-                    () => controller.filteredMembers.isEmpty
+                () => controller.filteredMembers.isEmpty
                     ? MemberWidgets.buildEmptyListMessage()
                     : ListView.builder(
-                  itemCount: controller.filteredMembers.length,
-                  itemBuilder: (context, index) {
-                    final member = controller.filteredMembers[index];
-                    return MemberWidgets.buildMemberItem(
-                      context: context,
-                      member: member,
-                      onTap: () => Get.toNamed(AppRoutes.editMember, arguments: member),
-                      onDelete: () => _confirmDelete(context, member),
-                    );
-                  },
-                ),
+                        itemCount: controller.filteredMembers.length,
+                        itemBuilder: (context, index) {
+                          final member = controller.filteredMembers[index];
+                          return MemberWidgets.buildMemberItem(
+                            context: context,
+                            member: member,
+                            onTap: () => Get.toNamed(AppRoutes.editMember,
+                                arguments: member),
+                            onDelete: () => _confirmDelete(context, member),
+                          );
+                        },
+                      ),
               ),
             ),
           ],
@@ -84,9 +85,9 @@ class MemberListPage extends StatelessWidget {
         suffixIcon: Obx(() {
           return controller.searchQuery.value.isNotEmpty
               ? IconButton(
-            icon: const Icon(Icons.clear),
-            onPressed: controller.clearSearch,
-          )
+                  icon: const Icon(Icons.clear),
+                  onPressed: controller.clearSearch,
+                )
               : Container();
         }),
         border: OutlineInputBorder(

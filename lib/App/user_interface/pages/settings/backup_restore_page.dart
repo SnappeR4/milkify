@@ -7,7 +7,8 @@ import 'package:milkify/App/controllers/settings/backup_restore_controller.dart'
 import 'package:path/path.dart';
 
 class BackupRestorePage extends StatelessWidget {
-  final BackupRestoreController controller = Get.find<BackupRestoreController>();
+  final BackupRestoreController controller =
+      Get.find<BackupRestoreController>();
 
   BackupRestorePage({super.key});
 
@@ -41,14 +42,16 @@ class BackupRestorePage extends StatelessWidget {
                       final file = backupFiles[index];
                       return ListTile(
                         title: Text(basename(file.path)),
-                        subtitle: Text('Backup Date: ${file.statSync().modified}'),
+                        subtitle:
+                            Text('Backup Date: ${file.statSync().modified}'),
                         trailing: IconButton(
                           icon: const Icon(Icons.restore),
                           onPressed: () {
                             controller.restoreDatabase(file.path).then((_) {
                               // Additional logic if needed
                             }).catchError((error) {
-                              Get.snackbar('Error', 'Failed to restore database: $error');
+                              Get.snackbar('Error',
+                                  'Failed to restore database: $error');
                             });
                           },
                         ),
@@ -60,7 +63,8 @@ class BackupRestorePage extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     controller.backupDatabase().then((_) {
-                      Get.snackbar('Success', 'Database backup created successfully');
+                      Get.snackbar(
+                          'Success', 'Database backup created successfully');
                     });
                   },
                   child: const Text('Create Backup'),

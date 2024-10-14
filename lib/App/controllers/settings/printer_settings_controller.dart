@@ -2,9 +2,11 @@ import 'package:get/get.dart';
 
 import '../../data/services/database_helper.dart';
 import '../../utils/logger.dart';
+
 class PrinterSettingsController extends GetxController {
   var isReceiptPrintOn = false.obs;
   var selectedPrinter = ''.obs;
+
   // final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
 
   @override
@@ -22,7 +24,8 @@ class PrinterSettingsController extends GetxController {
         isReceiptPrintOn.value = settings['receipt_print'] == "true";
         selectedPrinter.value = settings['bluetooth_printer_name'] as String;
 
-        Logger.info("Settings loaded: receipt_print = ${settings['receipt_print']}, bluetooth_printer_name = ${settings['bluetooth_printer_name']}");
+        Logger.info(
+            "Settings loaded: receipt_print = ${settings['receipt_print']}, bluetooth_printer_name = ${settings['bluetooth_printer_name']}");
       } else {
         Logger.info("No settings found in the database.");
       }
@@ -37,10 +40,11 @@ class PrinterSettingsController extends GetxController {
 
       // Save settings using the common saveSettings method
       await DatabaseHelper.saveSettings('receipt_print', receiptPrintValue);
-      await DatabaseHelper.saveSettings('bluetooth_printer_name', selectedPrinter.value);
+      await DatabaseHelper.saveSettings(
+          'bluetooth_printer_name', selectedPrinter.value);
 
       Logger.info("Settings updated successfully.");
-      await loadSettings();  // Reload settings to reflect changes
+      await loadSettings(); // Reload settings to reflect changes
     } catch (e) {
       Logger.error("Error updating settings in the database: $e");
     }

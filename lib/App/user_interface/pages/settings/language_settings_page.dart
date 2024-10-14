@@ -3,7 +3,8 @@ import 'package:get/get.dart';
 import 'package:milkify/App/controllers/settings/language_settings_controller.dart';
 
 class LanguageSettingsPage extends StatelessWidget {
-  final LanguageSettingsController controller = Get.find<LanguageSettingsController>();
+  final LanguageSettingsController controller =
+      Get.find<LanguageSettingsController>();
 
   LanguageSettingsPage({super.key});
 
@@ -11,7 +12,8 @@ class LanguageSettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('language_settings'.tr), // Using translation key for the title
+        title: Text('language_settings'.tr),
+        // Using translation key for the title
         centerTitle: true,
       ),
       body: Padding(
@@ -23,7 +25,8 @@ class LanguageSettingsPage extends StatelessWidget {
             children: [
               Text(
                 'select_language'.tr, // Translation key for 'Select Language'
-                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 30),
@@ -50,7 +53,8 @@ class LanguageSettingsPage extends StatelessWidget {
                     ],
                   ),
                   child: DropdownButton<String>(
-                    value: controller.selectedLanguage.value, // Bind the value to selectedLanguage
+                    value: controller.selectedLanguage.value,
+                    // Bind the value to selectedLanguage
                     isExpanded: true,
                     underline: const SizedBox(),
                     items: const [
@@ -72,8 +76,10 @@ class LanguageSettingsPage extends StatelessWidget {
                     ],
                     onChanged: (value) {
                       if (value != null) {
-                        controller.updateLanguageSetting(value); // Update the language in the controller
-                        Get.updateLocale(Locale(value)); // Update the app locale
+                        controller.updateLanguageSetting(
+                            value); // Update the language in the controller
+                        Get.updateLocale(
+                            Locale(value)); // Update the app locale
                       }
                     },
                     hint: Text(

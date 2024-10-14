@@ -11,7 +11,8 @@ class DatePickerUtils {
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
-            dialogBackgroundColor: Colors.white, // Set background color to white
+            dialogBackgroundColor: Colors.white,
+            // Set background color to white
             colorScheme: const ColorScheme.light(
               primary: Colors.blue, // Set primary color (e.g., header)
               onPrimary: Colors.white, // Header text color

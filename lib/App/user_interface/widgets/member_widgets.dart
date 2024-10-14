@@ -45,16 +45,18 @@ class MemberWidgets {
                       children: [
                         Text(
                           member['name'], // Name of the member
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
                         ),
                         Text(
                           'ID: ${member['m_id']}', // Member ID
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            fontStyle: FontStyle.italic,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    fontStyle: FontStyle.italic,
+                                  ),
                         ),
                       ],
                     ),
@@ -76,14 +78,16 @@ class MemberWidgets {
                     // Balance
                     Row(
                       children: [
-                        const Icon(Icons.account_balance_wallet, size: 18, color: Colors.green),
+                        const Icon(Icons.account_balance_wallet,
+                            size: 18, color: Colors.green),
                         const SizedBox(width: 8.0),
                         Text(
                           'Balance: ₹${member['c_balance'].toStringAsFixed(2)}',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w500,
-                            color: Colors.green[700],
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.green[700],
+                                  ),
                         ),
                       ],
                     ),
@@ -92,7 +96,8 @@ class MemberWidgets {
                     // Milk Type and Liters
                     Row(
                       children: [
-                        const Icon(Icons.local_drink, size: 18, color: Colors.brown),
+                        const Icon(Icons.local_drink,
+                            size: 18, color: Colors.brown),
                         const SizedBox(width: 8.0),
                         Text(
                           '${member['milk_type']}',
@@ -132,10 +137,10 @@ class MemberWidgets {
         return const Text("🐄", style: TextStyle(fontSize: 24));
       case 'Buffalo':
         // return const Icon(Icons.pets, color: Colors.black); // Buffalo icon
-        return const Text("🐃",style: TextStyle(fontSize: 24));
+        return const Text("🐃", style: TextStyle(fontSize: 24));
       case 'Mix':
         // return const Icon(Icons.pets, color: Colors.redAccent); // Mixed milk icon
-        return const Text("🐂",style: TextStyle(fontSize: 24));
+        return const Text("🐂", style: TextStyle(fontSize: 24));
       default:
         return const Icon(Icons.help_outline);
     }

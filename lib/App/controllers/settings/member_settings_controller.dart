@@ -16,10 +16,14 @@ class MemberController extends GetxController {
   final MembersService membersService = MembersService();
   final SmsController smsController = Get.put(SmsController());
   RxMap<String, Object?> settings = <String, Object?>{}.obs;
+
   // List to store the members
   final RxList<Map<String, dynamic>> members = <Map<String, dynamic>>[].obs;
+
   // List to store filtered members for the search
-  final RxList<Map<String, dynamic>> filteredMembers = <Map<String, dynamic>>[].obs;
+  final RxList<Map<String, dynamic>> filteredMembers =
+      <Map<String, dynamic>>[].obs;
+
   // To hold the search query
   final RxString searchQuery = ''.obs;
 
@@ -39,12 +43,14 @@ class MemberController extends GetxController {
 
   //for sale page
   var isMemberSelected = false.obs;
+
   //for payment page
   var isMemberSelectedPayment = false.obs;
   final RxMap<String, dynamic> selectedMember = <String, dynamic>{}.obs;
   final RxMap<String, dynamic> selectedMemberPayment = <String, dynamic>{}.obs;
   final SaleController saleController = Get.find<SaleController>();
-  final CollectionController collectionController = Get.find<CollectionController>();
+  final CollectionController collectionController =
+      Get.find<CollectionController>();
 
   void selectMember(Map<String, dynamic> member) async {
     selectedMember.assignAll(member);
@@ -54,7 +60,10 @@ class MemberController extends GetxController {
     List<Map<String, dynamic>> result = await database.query(
       'transactions', // Your table name
       where: 'm_id = ? AND date = ?', // The condition for querying
-      whereArgs: [member['m_id'], currentDate], // Arguments to replace the placeholders
+      whereArgs: [
+        member['m_id'],
+        currentDate
+      ], // Arguments to replace the placeholders
     );
     // Get current date in the required format
 
@@ -64,8 +73,10 @@ class MemberController extends GetxController {
     if (isTransactionExist) {
       Get.defaultDialog(
         title: "Transaction Exists",
-        middleText: "A transaction for this member has already been made today. Do you want to continue?",
-        backgroundColor: AppTheme.color1, // Set background color to white
+        middleText:
+            "A transaction for this member has already been made today. Do you want to continue?",
+        backgroundColor: AppTheme.color1,
+        // Set background color to white
         textCancel: "Cancel",
         textConfirm: "Continue",
         onCancel: () {
@@ -76,8 +87,10 @@ class MemberController extends GetxController {
           Get.back(); // Close dialog
         },
         cancelTextColor: AppTheme.color7,
-        confirmTextColor: AppTheme.color1, // Optional: set text color for confirm button
-        buttonColor: AppTheme.color2, // Set button color based on theme
+        confirmTextColor: AppTheme.color1,
+        // Optional: set text color for confirm button
+        buttonColor: AppTheme.color2,
+        // Set button color based on theme
         barrierDismissible: false, // Make it mandatory to choose an option
       );
     } else {
@@ -87,21 +100,26 @@ class MemberController extends GetxController {
   }
 
   Future<void> setMemberSelected(bool selected) async {
-    final List<Map<String, dynamic>> memberList = await database.query('members');
+    final List<Map<String, dynamic>> memberList =
+        await database.query('members');
     filteredMembers.assignAll(memberList);
     isMemberSelected.value = selected;
   }
+
   //for payment page
   void selectMemberPayment(Map<String, dynamic> member) {
     selectedMemberPayment.assignAll(member);
     isMemberSelectedPayment.value = true;
     collectionController.fetchPayments(member['m_id']);
   }
+
   Future<void> setMemberSelectedPayment(bool selected) async {
-    final List<Map<String, dynamic>> memberList = await database.query('members');
+    final List<Map<String, dynamic>> memberList =
+        await database.query('members');
     filteredMembers.assignAll(memberList);
     isMemberSelectedPayment.value = selected;
   }
+
   // Method to edit a member
   Future<void> editMember(Map<String, dynamic> member) async {
     await database.update(
@@ -115,14 +133,18 @@ class MemberController extends GetxController {
 
   // Fetch members from the database
   Future<void> fetchMembers() async {
-    final List<Map<String, dynamic>> memberList = await database.query('members');
+    final List<Map<String, dynamic>> memberList =
+        await database.query('members');
     members.assignAll(memberList);
     searchMembers(searchQuery.value); // Apply the search if any
   }
+
   Future<void> syncMembers() async {
-    final List<Map<String, dynamic>> memberList = await database.query('members');
+    final List<Map<String, dynamic>> memberList =
+        await database.query('members');
     filteredMembers.assignAll(memberList);
   }
+
   void searchMembers(String query) {
     searchQuery.value = query;
 
@@ -133,7 +155,8 @@ class MemberController extends GetxController {
       filteredMembers.assignAll(
         members.where((member) {
           final name = member['name'].toLowerCase();
-          final id = member['m_id'].toString();  // Assuming 'm_id' is an integer or string
+          final id = member['m_id']
+              .toString(); // Assuming 'm_id' is an integer or string
           final mobileNumber = member['mobile_number'].toString();
 
           // Check if the query matches either name, id, or mobile number
@@ -177,7 +200,8 @@ class MemberController extends GetxController {
     }
   }
 
-  Future<void> submitTransaction(Map<String, dynamic> member, double liters, double rate, double total) async {
+  Future<void> submitTransaction(Map<String, dynamic> member, double liters,
+      double rate, double total) async {
     // var newTransaction = {
     //   'm_id': member['m_id'],
     //   'name': member['name'],
@@ -185,13 +209,14 @@ class MemberController extends GetxController {
     //   'rate': rate,
     //   'total': total,
     // };
-    Map<String, dynamic>? lastTransaction = await DatabaseHelper.getLastTransaction();
+    Map<String, dynamic>? lastTransaction =
+        await DatabaseHelper.getLastTransaction();
     int trId = 1;
     // Initialize receipt number
     String newReceiptNo = '001';
 
     if (lastTransaction != null) {
-      trId  = lastTransaction['tr_id'] + 1;
+      trId = lastTransaction['tr_id'] + 1;
 
       String lastReceiptNo = lastTransaction['receipt_no'];
       int receiptNumber = int.parse(lastReceiptNo) + 1;
@@ -200,7 +225,7 @@ class MemberController extends GetxController {
     }
 
     int pId = 0;
-    switch(member['milk_type']) {
+    switch (member['milk_type']) {
       case 'Cow':
         pId = 1;
         break;
@@ -215,17 +240,22 @@ class MemberController extends GetxController {
         break;
     }
     Transactions transaction = Transactions(
-      id: trId, // Assuming auto-increment ID
-      receiptNo: newReceiptNo, // Example receipt number
-      billType: '1',//1 normal 2 edited,3 void, 4 return
+      id: trId,
+      // Assuming auto-increment ID
+      receiptNo: newReceiptNo,
+      // Example receipt number
+      billType: '1',
+      //1 normal 2 edited,3 void, 4 return
       memberId: member['m_id'],
       productId: pId,
       productRate: rate,
       liters: liters,
       addOn: 0.0,
       total: total,
-      date: DateTime.now().toIso8601String().split('T')[0], // Current date
-      time: DateTime.now().toIso8601String().split('T')[1], // Current time
+      date: DateTime.now().toIso8601String().split('T')[0],
+      // Current date
+      time: DateTime.now().toIso8601String().split('T')[1],
+      // Current time
       timestamp: DateTime.now().toString(),
       editedTimestamp: '',
       paymentMode: '0',
@@ -238,10 +268,11 @@ class MemberController extends GetxController {
     fetchMembers();
     Logger.info(transaction.toMap().toString());
 
-    if (settings['sms_enable']==1) {
-      String totalBalance = (member['c_balance']+ total).toString();
-      String message = '''Receipt No: $newReceiptNo\nMilk Type : ${member['milk_type']}\nLiters    : $liters\nRate      : $rate\nTotal     : $total\nC.Balance : $totalBalance''';
-      if(member["mobile_number"].toString().length==10) {
+    if (settings['sms_enable'] == 1) {
+      String totalBalance = (member['c_balance'] + total).toString();
+      String message =
+          '''Receipt No: $newReceiptNo\nMilk Type : ${member['milk_type']}\nLiters    : $liters\nRate      : $rate\nTotal     : $total\nC.Balance : $totalBalance''';
+      if (member["mobile_number"].toString().length == 10) {
         String phoneNumber = "+91$member['mobile_number']";
         smsController.sendSms(
           phoneNumber,
@@ -253,8 +284,10 @@ class MemberController extends GetxController {
       Get.snackbar('Success', 'Transaction Saved successfully');
     }
   }
+
   Future<void> loadSettings() async {
-    settings.value = await DatabaseHelper.getSettings(); // Fetch settings from database
+    settings.value =
+        await DatabaseHelper.getSettings(); // Fetch settings from database
   }
 
   Future<void> importMembers() async {
@@ -265,7 +298,7 @@ class MemberController extends GetxController {
 
       // Insert imported members into the database
       for (var member in importedMembers) {
-        if(member.id>0) {
+        if (member.id > 0) {
           await insertMemberIntoDatabase(member);
         }
       }
@@ -299,19 +332,22 @@ class MemberController extends GetxController {
       conflictAlgorithm: ConflictAlgorithm.replace, // Replace if already exists
     );
   }
+
   Future<void> exportMembers() async {
     try {
       // Convert RxList<Map<String, dynamic>> to List<Member>
-      List<Member> membersList = members.map((member) => Member(
-        id: member['m_id'],
-        name: member['name'],
-        address: member['address'],
-        mobileNumber: member['mobile_number'],
-        recentlyPaid: member['recently_paid'],
-        currentBalance: member['c_balance'],
-        milkType: member['milk_type'],
-        liters: member['liters'],
-      )).toList();
+      List<Member> membersList = members
+          .map((member) => Member(
+                id: member['m_id'],
+                name: member['name'],
+                address: member['address'],
+                mobileNumber: member['mobile_number'],
+                recentlyPaid: member['recently_paid'],
+                currentBalance: member['c_balance'],
+                milkType: member['milk_type'],
+                liters: member['liters'],
+              ))
+          .toList();
 
       // Export members to Excel
       String response = await membersService.exportMembers(membersList);
@@ -320,6 +356,7 @@ class MemberController extends GetxController {
       Logger.error('Error exporting members: $e');
     }
   }
+
   // Initialize the controller
   @override
   Future<void> onInit() async {

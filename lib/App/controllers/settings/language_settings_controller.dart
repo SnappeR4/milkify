@@ -19,7 +19,8 @@ class LanguageSettingsController extends GetxController {
     try {
       Map<String, Object?> settings = await DatabaseHelper.getSettings();
       if (settings.isNotEmpty) {
-        selectedLanguage.value = settings['select_language'] as String? ?? 'en'; // Default to 'en' if null
+        selectedLanguage.value = settings['select_language'] as String? ??
+            'en'; // Default to 'en' if null
       } else {
         Logger.info("No language setting found, defaulting to 'en'");
         selectedLanguage.value = 'en';
@@ -33,7 +34,8 @@ class LanguageSettingsController extends GetxController {
   Future<void> updateLanguageSetting(String language) async {
     selectedLanguage.value = language; // Update the observable
     try {
-      await DatabaseHelper.saveSettings('select_language', language); // Save the language setting
+      await DatabaseHelper.saveSettings(
+          'select_language', language); // Save the language setting
       Logger.info("Language setting updated to $language");
     } catch (e) {
       Logger.error("Error saving settings: $e");

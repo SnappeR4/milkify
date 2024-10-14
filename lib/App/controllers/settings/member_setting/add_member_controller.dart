@@ -5,7 +5,9 @@ import '../../../utils/logger.dart';
 import '../member_settings_controller.dart';
 
 class AddMemberController extends GetxController {
-  final MemberController memberSettingsController = Get.find<MemberController>();
+  final MemberController memberSettingsController =
+      Get.find<MemberController>();
+
   @override
   Future<void> onInit() async {
     super.onInit();

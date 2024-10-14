@@ -1,4 +1,3 @@
-
 class ConverterUtils {
   static int parseStringToInt(String? value, {int defaultValue = 0}) {
     if (value == null) {

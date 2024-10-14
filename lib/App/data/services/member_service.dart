@@ -23,13 +23,16 @@ class MembersService {
         // Assuming the first sheet contains the members' data
         var sheet = excel.tables[excel.tables.keys.first]!.rows;
         List<Member> importedMembers = [];
-        for (var row in sheet.skip(1)) { // Skip the header row
+        for (var row in sheet.skip(1)) {
+          // Skip the header row
           importedMembers.add(Member(
-            id: ConverterUtils.parseStringToInt(_getCellValue(row[0])), // Use _getCellValue for safe value retrieval
+            id: ConverterUtils.parseStringToInt(_getCellValue(row[0])),
+            // Use _getCellValue for safe value retrieval
             name: _getCellValue(row[1]),
             address: _getCellValue(row[2]),
             mobileNumber: _getCellValue(row[3]),
-            recentlyPaid: double.tryParse(_getCellValue(row[4])) ?? 0.0, // Safe parsing to double
+            recentlyPaid: double.tryParse(_getCellValue(row[4])) ?? 0.0,
+            // Safe parsing to double
             currentBalance: double.tryParse(_getCellValue(row[5])) ?? 0.0,
             milkType: _getCellValue(row[6]),
             liters: double.tryParse(_getCellValue(row[7])) ?? 0.0,
@@ -41,6 +44,7 @@ class MembersService {
     }
     return null;
   }
+
   String _getCellValue(Data? cell) {
     if (cell == null) return ''; // Return an empty string for null cells
 
@@ -53,7 +57,7 @@ class MembersService {
       case TextCellValue:
         return cell.value.toString();
       case FormulaCellValue:
-      // Handle formulas, get the calculated value as a string
+        // Handle formulas, get the calculated value as a string
         return (cell.value as FormulaCellValue).toString();
       default:
         return ''; // Return an empty string for unknown types
@@ -95,7 +99,10 @@ class MembersService {
 
       // Apply header style
       for (var columnIndex = 0; columnIndex < 8; columnIndex++) {
-        sheet.cell(CellIndex.indexByColumnRow(columnIndex: columnIndex, rowIndex: 0)).cellStyle = headerStyle;
+        sheet
+            .cell(CellIndex.indexByColumnRow(
+                columnIndex: columnIndex, rowIndex: 0))
+            .cellStyle = headerStyle;
       }
 
       // Add member data rows
@@ -115,7 +122,10 @@ class MembersService {
         ]);
 
         for (var columnIndex = 0; columnIndex < 8; columnIndex++) {
-          sheet.cell(CellIndex.indexByColumnRow(columnIndex: columnIndex, rowIndex: i + 1)).cellStyle = dataStyle;
+          sheet
+              .cell(CellIndex.indexByColumnRow(
+                  columnIndex: columnIndex, rowIndex: i + 1))
+              .cellStyle = dataStyle;
         }
       }
 
@@ -137,24 +147,26 @@ class MembersService {
 
   Future<String?> _saveExcelFile(Excel excel) async {
     try {
-        final Directory downloadsDirectory = Directory('/storage/emulated/0/Download');
+      final Directory downloadsDirectory =
+          Directory('/storage/emulated/0/Download');
 
-        final String filePath = '${downloadsDirectory.path}/members_export.xlsx';
+      final String filePath = '${downloadsDirectory.path}/members_export.xlsx';
 
-        // Write the file
-        List<int>? fileBytes = excel.save();
-        if (fileBytes != null) {
-          File(join(filePath))
-            ..createSync(recursive: true)
-            ..writeAsBytesSync(fileBytes);
-          return filePath;
-        }
+      // Write the file
+      List<int>? fileBytes = excel.save();
+      if (fileBytes != null) {
+        File(join(filePath))
+          ..createSync(recursive: true)
+          ..writeAsBytesSync(fileBytes);
+        return filePath;
+      }
       return null;
     } catch (e) {
       Logger.error('Error saving Excel file: $e');
       return null;
     }
   }
+
   Future<bool> _requestPermission() async {
     if (await Permission.storage.request().isGranted) {
       return true;

@@ -6,6 +6,7 @@ import 'package:sqflite/sqflite.dart';
 class ReportController extends GetxController {
   final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   late Database database;
+
 // Reactive variables for data fetching
   var sumLiters = '0'.obs;
   var sumTotal = '0'.obs;
@@ -16,6 +17,7 @@ class ReportController extends GetxController {
   var editedCount = '0'.obs;
   var deletedCount = '0'.obs;
   var isControllerInitialized = false.obs;
+
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -53,7 +55,7 @@ class ReportController extends GetxController {
   String getCurrentDate() {
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
-    return formatter.format(now);  // Format as 'YYYY-MM-DD'
+    return formatter.format(now); // Format as 'YYYY-MM-DD'
   }
 
   // Get the sum of liters where void_bill_flag = 0

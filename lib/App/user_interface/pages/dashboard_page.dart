@@ -8,7 +8,6 @@ import 'sale_page.dart';
 import 'report_page.dart';
 
 class DashboardPage extends StatelessWidget {
-
   final DashboardController _controller = Get.find<DashboardController>();
 
   DashboardPage({super.key});
@@ -22,11 +21,13 @@ class DashboardPage extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Obx((){ return Text(_controller.appBarText);}),
+          title: Obx(() {
+            return Text(_controller.appBarText);
+          }),
           centerTitle: true,
         ),
         body: Obx(
-              () {
+          () {
             // Switch between pages based on the selected index
             switch (_controller.selectedIndex.value) {
               case 0:
@@ -43,32 +44,32 @@ class DashboardPage extends StatelessWidget {
           },
         ),
         bottomNavigationBar: Obx(
-              () => BottomNavigationBar(
-                backgroundColor: AppTheme.color1,
+          () => BottomNavigationBar(
+            backgroundColor: AppTheme.color1,
             currentIndex: _controller.selectedIndex.value,
             onTap: (index) {
               _controller.changeTabIndex(index);
             },
-                selectedItemColor: AppTheme.color2,
+            selectedItemColor: AppTheme.color2,
             items: const [
               BottomNavigationBarItem(
                 backgroundColor: Colors.white,
-                icon: Icon(Icons.settings,color: AppTheme.color2),
+                icon: Icon(Icons.settings, color: AppTheme.color2),
                 label: 'Settings',
               ),
               BottomNavigationBarItem(
                 backgroundColor: Colors.white,
-                icon: Icon(Icons.shopping_cart,color: AppTheme.color2),
+                icon: Icon(Icons.shopping_cart, color: AppTheme.color2),
                 label: 'Sale',
               ),
               BottomNavigationBarItem(
                 backgroundColor: Colors.white,
-                icon: Icon(Icons.assignment,color: AppTheme.color2),
+                icon: Icon(Icons.assignment, color: AppTheme.color2),
                 label: 'Collection',
               ),
               BottomNavigationBarItem(
                 backgroundColor: Colors.white,
-                icon: Icon(Icons.pie_chart,color: AppTheme.color2),
+                icon: Icon(Icons.pie_chart, color: AppTheme.color2),
                 label: 'Report',
               ),
             ],
@@ -77,25 +78,32 @@ class DashboardPage extends StatelessWidget {
       ),
     );
   }
+
 // Function to show the exit confirmation dialog
-Future<bool> _showExitConfirmationDialog(BuildContext context) async {
-  return await showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      backgroundColor: Colors.white,
-      title: const Text('Exit App'),
-      content: const Text('Are you sure you want to exit?'),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(false), // Stay in the app
-          child: const Text('No'),
-        ),
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(true), // Exit the app
-          child: const Text('Yes', style: TextStyle(color: Colors.redAccent),),
-        ),
-      ],
-    ),
-  ) ?? false; // Return false if dialog is dismissed by tapping outside
-}
+  Future<bool> _showExitConfirmationDialog(BuildContext context) async {
+    return await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            backgroundColor: Colors.white,
+            title: const Text('Exit App'),
+            content: const Text('Are you sure you want to exit?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                // Stay in the app
+                child: const Text('No'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                // Exit the app
+                child: const Text(
+                  'Yes',
+                  style: TextStyle(color: Colors.redAccent),
+                ),
+              ),
+            ],
+          ),
+        ) ??
+        false; // Return false if dialog is dismissed by tapping outside
+  }
 }

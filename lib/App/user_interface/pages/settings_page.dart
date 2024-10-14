@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../routes/app_routes.dart';
+
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
@@ -23,25 +24,29 @@ class SettingsPage extends StatelessWidget {
               context,
               'Member Settings',
               Icons.person,
-                  () => Get.toNamed(AppRoutes.memberList), // Navigate to member settings
+              () => Get.toNamed(
+                  AppRoutes.memberList), // Navigate to member settings
             ),
             _buildSettingCard(
               context,
               'Profile Settings',
               Icons.person_outline,
-                  () => Get.toNamed(AppRoutes.profileSettings), // Navigate to profile settings
+              () => Get.toNamed(
+                  AppRoutes.profileSettings), // Navigate to profile settings
             ),
             _buildSettingCard(
               context,
               'Backup and Restore',
               Icons.backup,
-                  () => Get.toNamed(AppRoutes.backupRestore), // Navigate to backup and restore
+              () => Get.toNamed(
+                  AppRoutes.backupRestore), // Navigate to backup and restore
             ),
             _buildSettingCard(
               context,
               'Language Settings',
               Icons.language,
-                  () => Get.toNamed(AppRoutes.languageSettings), // Navigate to language settings
+              () => Get.toNamed(
+                  AppRoutes.languageSettings), // Navigate to language settings
             ),
             // _buildSettingCard(
             //   context,
@@ -53,13 +58,15 @@ class SettingsPage extends StatelessWidget {
               context,
               'Collection Settings',
               Icons.collections,
-                  () => Get.toNamed(AppRoutes.collectionSettings), // Navigate to collection settings
+              () => Get.toNamed(AppRoutes
+                  .collectionSettings), // Navigate to collection settings
             ),
             _buildSettingCard(
               context,
               'Rate Settings',
               Icons.bar_chart,
-                  () => Get.toNamed(AppRoutes.rateSettings), // Navigate to rate chart settings
+              () => Get.toNamed(
+                  AppRoutes.rateSettings), // Navigate to rate chart settings
             ),
           ],
         ),
@@ -68,11 +75,11 @@ class SettingsPage extends StatelessWidget {
   }
 
   Widget _buildSettingCard(
-      BuildContext context,
-      String title,
-      IconData icon,
-      VoidCallback onTap,
-      ) {
+    BuildContext context,
+    String title,
+    IconData icon,
+    VoidCallback onTap,
+  ) {
     return Card(
       color: Colors.white,
       elevation: 4.0,
@@ -93,8 +100,8 @@ class SettingsPage extends StatelessWidget {
                 title,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
             ],
           ),

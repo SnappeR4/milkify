@@ -5,12 +5,14 @@ import 'package:milkify/App/data/services/database_helper.dart';
 import 'package:sqflite/sqflite.dart'; // Ensure you have sqflite for database operations
 
 class PaymentViewController extends GetxController {
-  var paymentTransactions = <MemberPayment>[].obs; // Observable list of transactions
+  var paymentTransactions =
+      <MemberPayment>[].obs; // Observable list of transactions
   var fromDate = ''.obs; // Observable from date
   var toDate = ''.obs; // Observable to date
   var isPdfGenerated = false.obs;
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
   late Database database;
+
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -42,7 +44,7 @@ class PaymentViewController extends GetxController {
   // Set the date range
   void setDateRange(DateTime from, DateTime to) {
     fromDate.value = _formatDate(from); // Format the 'from' date
-    toDate.value = _formatDate(to);     // Format the 'to' date
+    toDate.value = _formatDate(to); // Format the 'to' date
     fetchTransactions(); // Fetch transactions when the date range is set
   }
 }
