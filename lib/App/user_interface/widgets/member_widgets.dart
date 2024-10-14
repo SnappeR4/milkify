@@ -6,7 +6,7 @@ class MemberWidgets {
   static Widget buildEmptyListMessage() {
     return Center(
       child: Text(
-        'No members found',
+        'No members found Go To >> Member Setting',
         style: AppTheme.lightTheme.textTheme.bodyMedium,
       ),
     );

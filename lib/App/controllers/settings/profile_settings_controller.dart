@@ -43,6 +43,7 @@ class ProfileSettingsController extends GetxController {
       Get.snackbar("Profile", "Updated Successfully");
     } else {
       await dbHelper.insertProfile(newProfile);
+      Get.snackbar("Profile", "Inserted Successfully");
     }
     profile.value = newProfile;
   }
