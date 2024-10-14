@@ -18,18 +18,6 @@ class SalePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Members'),
-      //   actions: [
-      //     IconButton(
-      //       icon: const Icon(Icons.add),
-      //       onPressed: () {
-      //         controller.generateNewMemberId();
-      //         Get.toNamed(AppRoutes.addMember);
-      //       },
-      //     ),
-      //   ],
-      // ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Obx(
