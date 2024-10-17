@@ -27,6 +27,7 @@ class ReportPage extends StatelessWidget {
               Obx(() => ReportTableWidget(
                     text1: 'Liters',
                     text2: 'Total',
+                    text3: 'CUSTOM SALE REPORT',
                     value1: controller.sumLiters.value,
                     value2: controller.sumTotal.value,
                     onPressed: () {
@@ -42,6 +43,7 @@ class ReportPage extends StatelessWidget {
               Obx(() => ReportTableWidget(
                     text1: 'Receipts',
                     text2: 'Payments',
+                    text3: 'CUSTOM PAYMENT REPORT',
                     value1: controller.recordCount.value,
                     value2: controller.sumPaidAmount.value,
                     onPressed: () {
@@ -57,6 +59,7 @@ class ReportPage extends StatelessWidget {
               Obx(() => ReportTableWidget(
                     text1: 'Members',
                     text2: 'Liters',
+                    text3: 'CUSTOM MEMBER REPORT',
                     value1: controller.totalMembers.value,
                     value2: controller.totalLiters.value,
                     onPressed: () {
@@ -72,6 +75,7 @@ class ReportPage extends StatelessWidget {
               Obx(() => ReportTableWidget(
                     text1: 'Edited',
                     text2: 'Deleted',
+                    text3: 'EDITED/DELETED REPORT',
                     value1: controller.editedCount.value,
                     value2: controller.deletedCount.value,
                     onPressed: () {

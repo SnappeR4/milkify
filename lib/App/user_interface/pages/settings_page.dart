@@ -41,13 +41,13 @@ class SettingsPage extends StatelessWidget {
               () => Get.toNamed(
                   AppRoutes.backupRestore), // Navigate to backup and restore
             ),
-            _buildSettingCard(
-              context,
-              'Language Settings',
-              Icons.language,
-              () => Get.toNamed(
-                  AppRoutes.languageSettings), // Navigate to language settings
-            ),
+            // _buildSettingCard(
+            //   context,
+            //   'Language Settings',
+            //   Icons.language,
+            //   () => Get.toNamed(
+            //       AppRoutes.languageSettings), // Navigate to language settings
+            // ),
             // _buildSettingCard(
             //   context,
             //   'Printer Settings',

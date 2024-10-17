@@ -22,10 +22,10 @@ class CollectionSettingsPage extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           children: [
             SwitchListTile(
-              title: const Text('SMS Enable'),
-              value: settings['sms_enable'] == 1,
+              title: const Text('Rate Edit'),
+              value: settings['dynamic_rate'] == 1,
               onChanged: (value) {
-                controller.updateSetting('sms_enable', value ? 1 : 0);
+                controller.updateSetting('dynamic_rate', value ? 1 : 0);
               },
             ),
             // SwitchListTile(

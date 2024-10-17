@@ -5,6 +5,7 @@ import 'package:milkify/App/data/models/product.dart';
 import 'package:milkify/App/data/models/transaction.dart';
 import 'package:milkify/App/data/services/database_helper.dart';
 import 'package:milkify/App/utils/logger.dart';
+import 'package:milkify/App/utils/utils.dart';
 import 'package:sqflite/sqflite.dart';
 
 class SaleController extends GetxController {
@@ -25,11 +26,12 @@ class SaleController extends GetxController {
   final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   late Database database;
 
+  var onScreenMilkRate = 0.0.obs;
   var cowMilkRate = 0.0.obs;
   var buffaloMilkRate = 0.0.obs;
   var mixMilkRate = 0.0.obs;
   var transactions = <Transactions>[].obs; // Observable list of Transactions
-
+  var rateSetting = 0.obs;
   // Method to fetch all transactions
   Future<void> fetchTransactions() async {
     transactions.value = await DatabaseHelper.getTransactions();
@@ -42,8 +44,23 @@ class SaleController extends GetxController {
     fetchMembers(); // Load all members on initialization
     fetchProductRatesFromDB();
     await fetchTransactions();
+    loadSettings();
   }
 
+  Future<void> loadSettings() async {
+    try {
+      Map<String, Object?> settings = await DatabaseHelper.getSettings();
+      if (settings.isNotEmpty) {
+        rateSetting.value = ConverterUtils.parseStringToInt(settings['dynamic_rate'].toString());
+      } else {
+        Logger.info("No language setting found, defaulting to 'en'");
+        rateSetting.value = 0;
+      }
+    } catch (e) {
+      Logger.error("Error loading settings: $e");
+      rateSetting.value = 0;
+    }
+  }
 // Fetch product rates from the database and store them in variables
   Future<void> fetchProductRatesFromDB() async {
     final List<Map<String, dynamic>> products = await database.query('product');

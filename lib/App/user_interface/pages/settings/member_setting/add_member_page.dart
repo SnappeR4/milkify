@@ -24,7 +24,7 @@ class AddMemberPage extends StatelessWidget {
       TextEditingController(text: '0.00');
 
   final TextEditingController litersController =
-      TextEditingController(text: '0.0');
+      TextEditingController();
 
   // Dropdown values for milk type
   final List<String> milkTypes = ['Cow', 'Buffalo', 'Mix'];
@@ -56,9 +56,9 @@ class AddMemberPage extends StatelessWidget {
                 _buildTextField('Address', addressController, maxLength: 50),
                 _buildMilkTypeDropdown(), // Dropdown for milk type
                 _buildTextField('Deposit', currentBalanceController,
-                    isNumeric: true),
+                    isNumeric: true,maxLength: 9),
                 _buildTextField('Liters of Milk', litersController,
-                    isMandatory: true, isNumeric: true, minValue: 0.01),
+                    isMandatory: true, isNumeric: true, minValue: 0.01,maxLength: 9),
                 const SizedBox(height: 16.0),
                 ElevatedButton(
                   onPressed: _saveMember,

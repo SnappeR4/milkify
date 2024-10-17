@@ -50,6 +50,7 @@ class RateSettingPage extends StatelessWidget {
                           labelText: 'Rate',
                           border: OutlineInputBorder(),
                         ),
+                        maxLength: 9,
                         keyboardType: TextInputType.number,
                       ),
                       const SizedBox(height: 10),

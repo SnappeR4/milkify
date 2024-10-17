@@ -83,7 +83,7 @@ class SalePage extends StatelessWidget {
     saleController.liters.value = selectedMember['liters'];
     saleController.litersController =
         TextEditingController(text: selectedMember['liters'].toString());
-    final double rate = saleController
+    saleController.onScreenMilkRate.value = saleController
         .getRateForMilkType(selectedMember['milk_type']); // Fetch rate
     final List<Transactions> transactions =
         saleController.transactions.isNotEmpty
@@ -135,8 +135,9 @@ class SalePage extends StatelessWidget {
 
           // Liters and Rate Input
           Obx(() {
-            final rate = saleController.getRateForMilkType(
-                selectedMember['milk_type']); // or whichever milk type
+            saleController.loadSettings();
+            saleController.onScreenMilkRate.value = saleController.getRateForMilkType(
+                selectedMember['milk_type']);
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -167,7 +168,20 @@ class SalePage extends StatelessWidget {
                     children: [
                       const Text('Rate',
                           style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text('₹$rate', style: const TextStyle(fontSize: 16)),
+                  GestureDetector(
+                    onTap: () {
+                      if(saleController.rateSetting.value!=0){
+                        _showRateDialog(selectedMember['milk_type'], saleController.onScreenMilkRate.value);
+                      }else{
+                        Get.snackbar("Rate Edit", "Enable Settings");
+                      }
+                    },
+                    child: Obx(() {
+                      return Text(
+                        '₹${saleController.onScreenMilkRate.value}',
+                        style: const TextStyle(fontSize: 16, color: Colors.blue),
+                      );
+                    }),),
                       // Rate fetched from controller
                     ],
                   ),
@@ -191,7 +205,7 @@ class SalePage extends StatelessWidget {
                   Expanded(
                     child: Obx(() {
                       return Text(
-                          '₹${(saleController.liters * rate).toStringAsFixed(2)}',
+                          '₹${(saleController.liters * saleController.onScreenMilkRate.value).toStringAsFixed(2)}',
                           style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                           textAlign: TextAlign.right);
@@ -262,15 +276,15 @@ class SalePage extends StatelessWidget {
 
                         saleController.isSubmitting.value = true;
                         double liters = saleController.liters.value;
-                        if (liters == 0.0 || rate == 0.0) {
+                        if (liters == 0.0 || saleController.onScreenMilkRate.value == 0.0) {
                           // Show error if input is invalid
                           Logger.warn('Liters or rate cannot be 0');
                           Get.snackbar("Error", "Liters or rate cannot be 0");
                           return;
                         }
-                        double total = liters * rate;
+                        double total = liters * saleController.onScreenMilkRate.value;
                         controller.submitTransaction(
-                            selectedMember, liters, rate, total);
+                            selectedMember, liters, saleController.onScreenMilkRate.value, total);
                         await Future.delayed(const Duration(seconds: 1));
                         Logger.info('Transaction submitted');
                         saleController.isSubmitting.value = false;
@@ -367,6 +381,41 @@ class SalePage extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+// Method to show the rate input dialog
+  void _showRateDialog(String milkType, double currentRate) {
+    final TextEditingController rateController = TextEditingController();
+    rateController.text = currentRate.toString(); // Pre-fill with current rate
+
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: Colors.white,
+        title: const Text('Set Rate'),
+        content: TextField(
+          controller: rateController,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(hintText: 'Enter rate'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back(); // Close the dialog
+            },
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final newRate = double.tryParse(rateController.text);
+              if (newRate != null) {
+                saleController.onScreenMilkRate.value = newRate; // Update the rate in the controller
+                Get.back(); // Close the dialog
+              }
+            },
+            child: const Text('Set Rate'),
+          ),
+        ],
+      ),
     );
   }
 }

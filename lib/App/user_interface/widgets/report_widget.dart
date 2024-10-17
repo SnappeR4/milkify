@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class ReportTableWidget extends StatelessWidget {
   final String text1;
   final String text2;
+  final String text3;
   final String value1;
   final String value2;
   final VoidCallback onPressed;
@@ -11,6 +12,7 @@ class ReportTableWidget extends StatelessWidget {
     super.key,
     required this.text1,
     required this.text2,
+    required this.text3,
     required this.value1,
     required this.value2,
     required this.onPressed,
@@ -54,7 +56,7 @@ class ReportTableWidget extends StatelessWidget {
               Expanded(
                 child: ElevatedButton(
                   onPressed: onPressed,
-                  child: const Text('CUSTOM'),
+                  child: Text(text3),
                 ),
               ),
             ],

@@ -18,7 +18,7 @@ class CollectionSettingsController extends GetxController {
 
   Future<void> updateSetting(String settingColumn, dynamic value) async {
     await DatabaseHelper.saveSettings(
-        settingColumn, value); // Save updated settings to database
-    settings[settingColumn] = value; // Update the local settings map
+        settingColumn, value);
+    settings[settingColumn] = value;
   }
 }

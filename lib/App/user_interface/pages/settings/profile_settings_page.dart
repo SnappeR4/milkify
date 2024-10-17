@@ -70,15 +70,21 @@ class ProfileSettingsPage extends StatelessWidget {
                 controller: mobileNumberController,
                 decoration: const InputDecoration(labelText: 'Mobile Number'),
                 keyboardType: TextInputType.phone,
+                maxLength: 10,
               ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  profileController.saveProfile(
-                    brandNameController.text,
-                    mobileNumberController.text,
-                  );
-                  Get.back();
+                  if (_validateMobileNumber(mobileNumberController.text) == null) {
+                    profileController.saveProfile(
+                      brandNameController.text,
+                      mobileNumberController.text,
+                    );
+                    Get.back();
+                  } else {
+                    // Show error message
+                    Get.snackbar('Invalid Input', 'Please enter a valid mobile number.');
+                  }
                 },
                 child: Text(profileController.isEditing.value
                     ? 'Update Profile'
@@ -89,5 +95,16 @@ class ProfileSettingsPage extends StatelessWidget {
         );
       }),
     );
+  }
+  // Method to validate mobile number
+  static String? _validateMobileNumber(String value) {
+    if (value.isEmpty) {
+      return 'Mobile number is required';
+    } else if (value.length != 10) {
+      return 'Mobile number must be 10 digits';
+    } else if (!RegExp(r'^\d{10}$').hasMatch(value)) {
+      return 'Mobile number must contain only digits';
+    }
+    return null; // Valid number
   }
 }

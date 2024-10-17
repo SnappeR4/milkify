@@ -8,7 +8,7 @@ class Messages extends Translations {
           'SETTINGS': 'SETTINGS',
           'SALE': 'SALE',
           'PAYMENT COLLECTION': 'PAYMENT COLLECTION',
-          'REPORTS': 'Report',
+          'REPORTS': 'REPORT',
           'welcome': 'Welcome to the Milk Collection App',
           'language_settings': 'Language Settings',
           'select_language': 'Select Language',
