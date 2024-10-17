@@ -9,6 +9,7 @@ import 'package:sqflite/sqflite.dart';
 
 class SaleController extends GetxController {
   // final SmsController smsController = Get.put(SmsController());
+  var isSubmitting = false.obs;
   final searchController = TextEditingController();
   var liters = 0.0.obs;
   TextEditingController litersController = TextEditingController();

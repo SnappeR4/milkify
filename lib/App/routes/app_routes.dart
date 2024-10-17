@@ -15,7 +15,7 @@ class AppRoutes {
   static const printerSettings = '/printerSettings';
   static const collectionSettings = '/collectionSettings';
   static const rateSettings = '/rateSettings';
-
+  static const rateSettingsFromSplash = '/rateSettings';
   //member setting
   static const String editMember = '/editMember';
   static const String addMember = '/addMember';

@@ -4,6 +4,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:milkify/App/controllers/settings/language_settings_controller.dart';
+import 'package:milkify/App/data/services/database_helper.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sqflite/sqflite.dart';
@@ -13,10 +14,13 @@ import '../utils/logger.dart';
 class SplashController extends GetxController {
   final String dbName = 'milkify.db';
   RxBool isLoading = true.obs;
-
+  final LanguageSettingsController languageController = Get.put(LanguageSettingsController());
+  final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
+  late Database database;
   @override
   Future<void> onInit() async {
     super.onInit();
+    database = await _databaseHelper.database;
     Future.delayed(const Duration(seconds: 1), () {
       isLoading.value = false;
     });
@@ -51,29 +55,24 @@ class SplashController extends GetxController {
 
   void _checkLoginStatus() async {
     backupDatabase("milkify.db");
-    // Load the language settings from the controller
-    final LanguageSettingsController languageController = Get.put(LanguageSettingsController());
-    await languageController.loadSettings(); // Ensure language settings are loaded
-
-    // final SharedPreferences prefs = await SharedPreferences.getInstance();
-    // final String? userMobileNumber = prefs.getString('user_mobile_number');
-    //
-    // if (userMobileNumber == null || userMobileNumber.isEmpty) {
-    //   // User is not registered, navigate to RegisterPage
-    //   Future.delayed(const Duration(seconds: 5), () {
-    //     Get.offAllNamed(AppRoutes.register);
-    //   });
-    // } else {
-    // User is registered, navigate to Dashboard
-    Future.delayed(const Duration(seconds: 5), () {
+    await languageController.loadSettings();
+    // bool rate = await fetchProductRatesFromDB();
+    Future.delayed(const Duration(seconds: 5), () async {
       Logger.info("Language: ${languageController.selectedLanguage.value}");
-      // Update the app locale based on the loaded setting
       Get.updateLocale(Locale(languageController.selectedLanguage.value));
       Get.offAllNamed(AppRoutes.dashboard);
     });
-    // }
   }
-
+  Future<bool> fetchProductRatesFromDB() async {
+    final List<Map<String, dynamic>> products = await database.query('product');
+    Logger.info(products.toString());
+    for (var product in products) {
+      if(product['rate']!=null && product['rate']>0.0) {
+        return true;
+      }
+    }
+    return false;
+  }
   Future<void> backupDatabase(String dbName) async {
     try {
       // final Directory documentsDirectory = await getApplicationDocumentsDirectory();

@@ -77,6 +77,7 @@ class DatabaseHelper {
         sms_enable INTEGER,
         install_date TEXT,
         payment_flag INTEGER,
+        dynamic_rate INTEGER,
         add_on_flag INTEGER
       )
     ''');
@@ -110,6 +111,7 @@ class DatabaseHelper {
       'sms_enable': null,
       'install_date': null,
       'payment_flag': null,
+      'dynamic_rate': null,
       'add_on_flag': null,
     });
 

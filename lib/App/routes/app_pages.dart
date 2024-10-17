@@ -12,7 +12,6 @@ import 'package:milkify/App/user_interface/pages/report/payment_view.dart';
 import 'package:milkify/App/user_interface/pages/report/transactions_view.dart';
 import 'package:milkify/App/user_interface/pages/settings/rate_settings_page.dart';
 import '../bindings/dashboard_binding.dart';
-import '../bindings/register_binding.dart';
 import '../bindings/report_binding.dart';
 import '../bindings/sale_binding.dart';
 import '../bindings/settings/backup_restore_binding.dart';
@@ -24,7 +23,6 @@ import '../bindings/settings/profile_settings_binding.dart';
 import '../bindings/settings_binding.dart';
 import '../bindings/splash_binding.dart';
 import '../user_interface/pages/dashboard_page.dart';
-import '../user_interface/pages/register_page.dart';
 import '../user_interface/pages/report_page.dart';
 import '../user_interface/pages/sale_page.dart';
 import '../user_interface/pages/settings/backup_restore_page.dart';
@@ -45,11 +43,6 @@ class AppPages {
       name: AppRoutes.splash,
       page: () => const SplashPage(),
       binding: SplashBinding(),
-    ),
-    GetPage(
-      name: AppRoutes.register,
-      page: () => const RegisterPage(),
-      binding: RegisterBinding(),
     ),
     GetPage(
       name: AppRoutes.dashboard,

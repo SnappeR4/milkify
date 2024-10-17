@@ -2,9 +2,7 @@
 class Assets {
   Assets._();
 
-  static const String iconIcon = 'assets/icon/icon.png';
   static const String imagesDefaultProfile = 'assets/images/default_profile.jpeg';
-  static const String imagesRegisterPageImage = 'assets/images/register_page_image.jpg';
   static const String lottiesSplashAnimation = 'assets/lotties/splash_animation.json';
 
 }

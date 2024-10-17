@@ -188,9 +188,9 @@ class MemberReportPage extends StatelessWidget {
           future: controller.getTotalPaidAmount(selectedMember['m_id']),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             } else if (snapshot.hasError) {
-              return Text('Error fetching total paid amount');
+              return const Text('Error fetching total paid amount');
             } else {
               return _buildLedgerRow(
                   'Total Paid Amount', snapshot.data?.toString() ?? '0.0');
@@ -203,9 +203,9 @@ class MemberReportPage extends StatelessWidget {
           future: controller.getTotalBillAmount(selectedMember['m_id']),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             } else if (snapshot.hasError) {
-              return Text('Error fetching total bill amount');
+              return const Text('Error fetching total bill amount');
             } else {
               return _buildLedgerRow(
                   'Total Bill Amount', snapshot.data?.toString() ?? '0.0');

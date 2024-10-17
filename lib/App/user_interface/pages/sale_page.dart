@@ -13,7 +13,6 @@ class SalePage extends StatelessWidget {
 
   SalePage({super.key});
 
-  bool _isSubmitting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -259,9 +258,9 @@ class SalePage extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () async {
-                        if (_isSubmitting) return;
+                        if (saleController.isSubmitting.value) return;
 
-                        _isSubmitting = true; // Set submitting state to true
+                        saleController.isSubmitting.value = true;
                         double liters = saleController.liters.value;
                         if (liters == 0.0 || rate == 0.0) {
                           // Show error if input is invalid
@@ -274,7 +273,7 @@ class SalePage extends StatelessWidget {
                             selectedMember, liters, rate, total);
                         await Future.delayed(const Duration(seconds: 1));
                         Logger.info('Transaction submitted');
-                        _isSubmitting = false;
+                        saleController.isSubmitting.value = false;
                         controller.setMemberSelected(false);
                       },
                       child: const Text('Submit'),
