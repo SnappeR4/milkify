@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'App/routes/app_pages.dart';
 import 'App/routes/app_routes.dart';
 import 'App/user_interface/localization/messages.dart';
