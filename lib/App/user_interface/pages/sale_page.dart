@@ -286,6 +286,7 @@ class SalePage extends StatelessWidget {
                         controller.submitTransaction(
                             selectedMember, liters, saleController.onScreenMilkRate.value, total);
                         await Future.delayed(const Duration(seconds: 1));
+                        await controller.syncMembers();
                         Logger.info('Transaction submitted');
                         saleController.isSubmitting.value = false;
                         controller.setMemberSelected(false);

@@ -206,6 +206,7 @@ class CollectionPage extends StatelessWidget {
                         mobileNumber: selectedMemberPayment['mobile_number']);
 
                     Logger.info('Payment transaction submitted');
+                    await memberController.syncMembers();
                     await Future.delayed(const Duration(seconds: 1));
                     memberController
                         .setMemberSelectedPayment(false); // Close payment form

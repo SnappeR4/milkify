@@ -451,7 +451,7 @@ class MemberReportPage extends StatelessWidget {
                   'Bill No',
                   'Member ID',
                   'Paid Amount',
-                  'Current Balance'
+                  // 'Current Balance'
                 ],
                 data: chunk.map((transaction) {
                   return [
@@ -460,7 +460,7 @@ class MemberReportPage extends StatelessWidget {
                     transaction.billNo,
                     transaction.memberId.toString(),
                     transaction.paidAmount.toString(),
-                    transaction.currentBalance.toString(),
+                    // transaction.currentBalance.toString(),
                   ];
                 }).toList(),
                 headerStyle: pw.TextStyle(
@@ -475,7 +475,7 @@ class MemberReportPage extends StatelessWidget {
                   2: const pw.FixedColumnWidth(60),
                   3: const pw.FixedColumnWidth(60),
                   4: const pw.FixedColumnWidth(80),
-                  5: const pw.FixedColumnWidth(80),
+                  // 5: const pw.FixedColumnWidth(80),
                 },
                 border: pw.TableBorder.all(),
                 cellPadding:

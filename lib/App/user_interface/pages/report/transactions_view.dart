@@ -135,7 +135,7 @@ class TransactionView extends StatelessWidget {
     final regularFont = await PdfGoogleFonts.nunitoExtraBold();
 
     // Split transactions into chunks of 20 records per page
-    const int recordsPerPage = 17;
+    const int recordsPerPage = 28;
     List<List<Transactions>> chunks = [];
 
     for (var i = 0; i < controller.transactions.length; i += recordsPerPage) {
@@ -179,10 +179,10 @@ class TransactionView extends StatelessWidget {
               pw.Table.fromTextArray(
                 headers: [
                   'Date',
+                  'Time',
                   'Receipt No',
                   'Bill Type',
                   'Member ID',
-                  'Opening Balance',
                   'Product ID',
                   'Rate',
                   'Liters',
@@ -195,11 +195,11 @@ class TransactionView extends StatelessWidget {
                           ? ' Deleted'
                           : ' Regular';
                   return [
-                    transaction.date + transaction.time.substring(0, 8),
+                    transaction.date,
+                    transaction.time.substring(0, 8),
                     transaction.receiptNo,
                     status,
                     transaction.memberId.toString(),
-                    transaction.memberOpeningBalance.toString(),
                     transaction.productId.toString(),
                     transaction.productRate.toString(),
                     transaction.liters.toString(),

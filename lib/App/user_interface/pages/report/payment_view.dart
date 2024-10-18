@@ -173,7 +173,7 @@ class PaymentView extends StatelessWidget {
                   'Bill No',
                   'Member ID',
                   'Paid Amount',
-                  'Current Balance',
+                  // 'Current Balance',
                 ],
                 data: chunk.map((transaction) {
                   return [
@@ -182,7 +182,7 @@ class PaymentView extends StatelessWidget {
                     transaction.billNo,
                     transaction.memberId.toString(),
                     transaction.paidAmount.toString(),
-                    transaction.currentBalance.toString(),
+                    // transaction.currentBalance.toString(),
                   ];
                 }).toList(),
                 headerStyle: pw.TextStyle(
@@ -203,7 +203,7 @@ class PaymentView extends StatelessWidget {
                   // Adjust width for 'Member ID'
                   4: const pw.FixedColumnWidth(80),
                   // Adjust width for 'Paid Amount'
-                  5: const pw.FixedColumnWidth(80),
+                  // 5: const pw.FixedColumnWidth(80),
                   // Adjust width for 'Current Balance'
                 },
                 border: pw.TableBorder.all(),

@@ -102,6 +102,7 @@ class MemberController extends GetxController {
   Future<void> setMemberSelected(bool selected) async {
     final List<Map<String, dynamic>> memberList =
         await database.query('members');
+    members.assignAll(memberList);
     filteredMembers.assignAll(memberList);
     isMemberSelected.value = selected;
   }
@@ -116,6 +117,7 @@ class MemberController extends GetxController {
   Future<void> setMemberSelectedPayment(bool selected) async {
     final List<Map<String, dynamic>> memberList =
         await database.query('members');
+    members.assignAll(memberList);
     filteredMembers.assignAll(memberList);
     isMemberSelectedPayment.value = selected;
   }
@@ -143,6 +145,7 @@ class MemberController extends GetxController {
   Future<void> syncMembers() async {
     final List<Map<String, dynamic>> memberList =
         await database.query('members');
+    members.assignAll(memberList);
     filteredMembers.assignAll(memberList);
   }
 
@@ -266,7 +269,6 @@ class MemberController extends GetxController {
     );
 
     await DatabaseHelper.saveTransaction(transaction);
-    fetchMembers();
     Logger.info(transaction.toMap().toString());
 
     if (settings['sms_enable'] == 1) {

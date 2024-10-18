@@ -59,7 +59,7 @@ class AddMemberPage extends StatelessWidget {
                     isNumeric: true,maxLength: 9),
                 _buildTextField('Liters of Milk', litersController,
                     isMandatory: true, isNumeric: true, minValue: 0.01,maxLength: 9),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 10.0),
                 ElevatedButton(
                   onPressed: _saveMember,
                   child: const Text('Save Member'),
