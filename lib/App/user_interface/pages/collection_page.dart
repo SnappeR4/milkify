@@ -60,15 +60,25 @@ class CollectionPage extends StatelessWidget {
       onChanged: memberController.searchMembers,
       decoration: InputDecoration(
         labelText: 'Search Members',
-        hintText: 'Search Members',
         prefixIcon: const Icon(Icons.search),
         suffixIcon: Obx(() {
-          return memberController.searchQuery.value.isNotEmpty
-              ? IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: memberController.clearSearch,
-                )
-              : Container();
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.qr_code_scanner),
+                onPressed: () {
+                  memberController.scanQrCode(false);
+                },
+              ),
+              memberController.searchQuery.value.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: memberController.clearSearch,
+                    )
+                  : Container(),
+            ],
+          );
         }),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),

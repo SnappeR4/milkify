@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import '../../../../controllers/settings/member_settings_controller.dart';
 
 class EditMemberPage extends StatelessWidget {
@@ -9,7 +12,7 @@ class EditMemberPage extends StatelessWidget {
       Get.arguments; // Get the member data passed to the page
 
   final MemberController memberSettingsController =
-      Get.find<MemberController>();
+  Get.find<MemberController>();
 
   // Text controllers for editing member details
   final TextEditingController memberNameController = TextEditingController();
@@ -17,7 +20,7 @@ class EditMemberPage extends StatelessWidget {
   final TextEditingController addressController = TextEditingController();
   final TextEditingController recentlyPaidController = TextEditingController();
   final TextEditingController currentBalanceController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController litersController = TextEditingController();
 
   // Dropdown values for milk type
@@ -53,6 +56,8 @@ class EditMemberPage extends StatelessWidget {
               // Dropdown for milk type
               _buildTextField('Liters of Milk', litersController,
                   isMandatory: true),
+              const SizedBox(height: 16.0),
+              _buildQrCode(jsonEncode({"m_id": member['m_id'].toString()})),
               const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: _updateMember,
@@ -108,6 +113,7 @@ class EditMemberPage extends StatelessWidget {
       'recently_paid': double.tryParse(recentlyPaidController.text) ?? 0.00,
       'c_balance': double.tryParse(currentBalanceController.text) ?? 0.00,
       'liters': liters,
+      'qr_code': member['qr_code'],
     };
 
     // Update the member in the controller
@@ -119,7 +125,8 @@ class EditMemberPage extends StatelessWidget {
   Widget _buildDropdownField(String label, RxString selectedValue) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Obx(() => DropdownButtonFormField<String>(
+      child: Obx(() =>
+          DropdownButtonFormField<String>(
             value: selectedValue.value.isNotEmpty ? selectedValue.value : null,
             items: milkTypes.map((String type) {
               return DropdownMenuItem<String>(
@@ -152,8 +159,8 @@ class EditMemberPage extends StatelessWidget {
           border: const OutlineInputBorder(),
         ),
         keyboardType: (label == 'Recently Paid' ||
-                label == 'Current Balance' ||
-                label == 'Liters of Milk')
+            label == 'Current Balance' ||
+            label == 'Liters of Milk')
             ? const TextInputType.numberWithOptions(decimal: true)
             : TextInputType.text,
       ),
@@ -173,5 +180,15 @@ class EditMemberPage extends StatelessWidget {
         enabled: false,
       ),
     );
+  }
+  // Helper widget to display QR code
+  Widget _buildQrCode(String qrData) {
+    return qrData.isNotEmpty
+        ? QrImageView(
+      data: qrData,
+      version: QrVersions.auto,
+      size: 200.0,
+    )
+        : const Text('No QR Code available');
   }
 }

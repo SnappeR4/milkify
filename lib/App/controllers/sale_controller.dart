@@ -19,13 +19,11 @@ class SaleController extends GetxController {
 
   Rx<Member?> selectedMember = Rx<Member?>(null);
   Rx<Product?> selectedProduct = Rx<Product?>(null);
-
   RxList<Member> allMembers = <Member>[].obs; // List to hold all members
   RxList<Member> filteredMembers =
       <Member>[].obs; // List to hold filtered members
   final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   late Database database;
-
   var onScreenMilkRate = 0.0.obs;
   var cowMilkRate = 0.0.obs;
   var buffaloMilkRate = 0.0.obs;

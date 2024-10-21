@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
@@ -36,6 +37,7 @@ class MembersService {
             currentBalance: double.tryParse(_getCellValue(row[5])) ?? 0.0,
             milkType: _getCellValue(row[6]),
             liters: double.tryParse(_getCellValue(row[7])) ?? 0.0,
+            qr_code: jsonEncode({"m_id": ConverterUtils.parseStringToInt(_getCellValue(row[0]))})
           ));
         }
         Logger.info(importedMembers.toString());

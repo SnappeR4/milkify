@@ -62,12 +62,23 @@ class SalePage extends StatelessWidget {
         labelText: 'Search Members',
         prefixIcon: const Icon(Icons.search),
         suffixIcon: Obx(() {
-          return controller.searchQuery.value.isNotEmpty
-              ? IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: controller.clearSearch,
-                )
-              : Container();
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.qr_code_scanner),
+                onPressed: () {
+                  controller.scanQrCode(true);
+                },
+              ),
+              controller.searchQuery.value.isNotEmpty
+                  ? IconButton(
+                icon: const Icon(Icons.clear),
+                onPressed: controller.clearSearch,
+              )
+                  : Container(),
+            ],
+          );
         }),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
@@ -75,6 +86,7 @@ class SalePage extends StatelessWidget {
       ),
     );
   }
+
 
   Widget _buildSelectedMemberDetails() {
     saleController.fetchProductRatesFromDB();

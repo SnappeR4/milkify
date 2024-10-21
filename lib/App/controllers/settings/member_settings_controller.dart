@@ -1,12 +1,17 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:milkify/App/controllers/collection_controller.dart';
 import 'package:milkify/App/controllers/sale_controller.dart';
+
 // import 'package:milkify/App/controllers/sms_controller.dart';
 import 'package:milkify/App/data/models/member.dart';
 import 'package:milkify/App/data/models/transaction.dart';
 import 'package:milkify/App/data/services/member_service.dart';
 import 'package:milkify/App/user_interface/themes/app_theme.dart';
+import 'package:milkify/App/user_interface/widgets/qr_scanner.dart';
+import 'package:milkify/App/utils/utils.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../data/services/database_helper.dart';
@@ -14,6 +19,7 @@ import '../../utils/logger.dart';
 
 class MemberController extends GetxController {
   final MembersService membersService = MembersService();
+
   // final SmsController smsController = Get.put(SmsController());
   RxMap<String, Object?> settings = <String, Object?>{}.obs;
 
@@ -26,6 +32,7 @@ class MemberController extends GetxController {
 
   // To hold the search query
   final RxString searchQuery = ''.obs;
+  var qrCodeResult = ''.obs;
 
   // Member ID
   final RxString newMemberId = ''.obs;
@@ -349,15 +356,84 @@ class MemberController extends GetxController {
                 currentBalance: member['c_balance'],
                 milkType: member['milk_type'],
                 liters: member['liters'],
+                qr_code: member['qr_code'],
               ))
           .toList();
 
-      // Export members to Excel
       String response = await membersService.exportMembers(membersList);
       Get.snackbar("Member File", response);
     } catch (e) {
       Logger.error('Error exporting members: $e');
     }
+  }
+
+  Future<void> scanQrCode(bool sale) async {
+    // Use QR code scanner here
+    final result = await Get.to(() => QrScannerScreen(sale: sale));
+
+    if (result != null) {
+      Logger.info(result.toString());
+
+      // Extract the QR code and toggle value from the result
+      final String? code = result['code']; // Ensure this is extracted as a String
+      final bool toggle = result['toggle'] ?? false;
+
+      if (code != null) {
+        try {
+          final decodedJson = jsonDecode(code);
+
+          final String memberId = decodedJson['m_id'].toString();
+          Logger.info('Decoded Member ID: $memberId');
+          qrCodeResult.value = code;
+          final member = searchMembersQR(ConverterUtils.parseStringToInt(memberId));
+          if (toggle) {
+            double rate = await getRateForMilkType(member['milk_type']);
+            double liters = double.parse(member['liters'].toString());
+            Logger.info("$rate + $liters");
+            if (rate > 0.0 && liters > 0.0) {
+              await submitTransaction(member, liters, rate, liters * rate);
+              await Future.delayed(const Duration(seconds: 1));
+              await scanQrCode(toggle);
+            } else {
+              Get.snackbar("Error", "Liters or rate cannot be 0");
+            }
+          }else {
+            if (sale) {
+              selectMember(member);
+            } else {
+              selectMemberPayment(member);
+            }
+          }
+        } catch (e) {
+          Logger.error('Failed to decode JSON from QR code: $e');
+          Get.snackbar('Error', 'Invalid QR code data.');
+        }
+      }
+    }
+  }
+
+  Future<double> getRateForMilkType(String milkType) async {
+    final List<Map<String, dynamic>> products = await database.query('product');
+    for (var product in products) {
+      switch (product['name']) {
+        case 'Cow':
+          return double.tryParse(product['rate'].toString()) ?? 0.0;
+        case 'Buffalo':
+          return double.tryParse(product['rate'].toString()) ?? 0.0 ;
+        case 'Mix':
+          return double.tryParse(product['rate'].toString()) ?? 0.0;
+        default:
+          return 0.0;
+      }
+    }
+    return 0.0;
+  }
+
+  Map<String, dynamic> searchMembersQR(int query) {
+    final member = filteredMembers.firstWhere(
+      (member) => member['m_id'] == query,
+    );
+    return member;
   }
 
   // Initialize the controller

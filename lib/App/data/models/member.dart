@@ -7,6 +7,7 @@ class Member {
   final double currentBalance;
   final String milkType;
   final double liters;
+  final String qr_code;
 
   Member({
     required this.id,
@@ -17,6 +18,7 @@ class Member {
     required this.currentBalance,
     required this.milkType,
     required this.liters,
+    required this.qr_code,
   });
 
   // Convert a Member object into a Map object
@@ -44,6 +46,7 @@ class Member {
       currentBalance: map['c_balance'],
       milkType: map['milk_type'],
       liters: map['liters'],
+      qr_code: map['qr_code'],
     );
   }
 }

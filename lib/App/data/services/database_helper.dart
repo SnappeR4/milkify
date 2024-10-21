@@ -54,7 +54,8 @@ class DatabaseHelper {
         recently_paid REAL,
         c_balance REAL,
         milk_type TEXT,
-        liters REAL
+        liters REAL,
+        qr_code TEXT
       )
     ''');
 

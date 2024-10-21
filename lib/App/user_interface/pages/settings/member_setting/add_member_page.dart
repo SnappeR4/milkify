@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../controllers/settings/member_setting/add_member_controller.dart';
@@ -85,6 +87,7 @@ class AddMemberPage extends StatelessWidget {
         'recently_paid': double.tryParse(currentBalanceController.text) ?? 0.00,
         'c_balance': double.tryParse(currentBalanceController.text) ?? 0.00,
         'liters': double.tryParse(litersController.text) ?? 0.00,
+        'qr_code': jsonEncode({"m_id": memberSettingsController.newMemberId.value}),
       };
       Logger.info(newMember.toString());
       controller.addMember(newMember); // Use the AddMemberController
