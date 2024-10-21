@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:milkify/App/controllers/collection_controller.dart';
@@ -12,11 +14,13 @@ import 'package:milkify/App/data/services/member_service.dart';
 import 'package:milkify/App/user_interface/themes/app_theme.dart';
 import 'package:milkify/App/user_interface/widgets/qr_scanner.dart';
 import 'package:milkify/App/utils/utils.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../data/services/database_helper.dart';
 import '../../utils/logger.dart';
-
+import 'dart:ui' as ui;
 class MemberController extends GetxController {
   final MembersService membersService = MembersService();
 
@@ -436,7 +440,107 @@ class MemberController extends GetxController {
     return member;
   }
 
-  // Initialize the controller
+// Method to export all QR codes to /Download/Milkify QR
+  Future<void> exportAllQrCodes() async {
+    // Request storage permission
+    var status = await Permission.storage.request();
+    if (!status.isGranted) {
+      Get.snackbar('Permission Denied', 'Storage permission is required to save QR codes');
+      return;
+    }
+
+    // Create folder in Download directory
+    final downloadDir = Directory('/storage/emulated/0/Download/Milkify QR');
+    if (!await downloadDir.exists()) {
+      await downloadDir.create(recursive: true);
+    }
+
+    try {
+      // Loop through all members and generate/save QR codes
+      for (var member in filteredMembers) {
+        await generateAndSaveQrCode(member, downloadDir.path);
+      }
+      Get.snackbar('Success', 'All QR codes exported to Download/Milkify QR folder ');
+    } catch (e) {
+      Get.snackbar('Error', 'An error occurred while exporting QR codes: $e');
+    }
+  }
+
+  Future<void> generateAndSaveQrCode(Map<String, dynamic> member, String path) async {
+    try {
+      // Set padding
+      const double padding = 20.0;
+
+      // Define sizes
+      const double qrSize = 200.0;
+      const double textHeight = 50.0;
+      const double totalWidth = qrSize + 2 * padding;  // Total width with padding
+      const double totalHeight = qrSize + textHeight + 3 * padding; // Total height with padding for QR, text, and additional spacing
+
+      final pictureRecorder = ui.PictureRecorder();
+      final canvas = Canvas(pictureRecorder);
+
+      // Draw background
+      final paint = Paint()..color = Colors.white;
+      canvas.drawRect(
+        const Rect.fromLTWH(0, 0, totalWidth, totalHeight),
+        paint,
+      );
+
+      // Create QR code
+      final qrImage = QrPainter(
+        data: member['m_id'].toString(),
+        version: QrVersions.auto,
+        gapless: false,
+        // color: Colors.black,
+        // emptyColor: Colors.white,
+      );
+
+      // Paint the QR code with padding
+      // Translate the canvas to account for padding
+      canvas.translate(padding, padding);
+      qrImage.paint(canvas, const Size(qrSize, qrSize));
+
+      // Prepare the text below the QR code
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: 'ID: ${member['m_id']}\nName: ${member['name']}',
+          style: const TextStyle(color: Colors.black, fontSize: 16.0),
+        ),
+        textAlign: TextAlign.center,
+        textDirection: ui.TextDirection.ltr,
+      );
+
+      // Layout the text
+      textPainter.layout(
+        minWidth: 0,
+        maxWidth: qrSize, // Keep text width the same as QR code width
+      );
+
+      // Paint the text
+      textPainter.paint(canvas, Offset(
+        (qrSize - textPainter.width) / 2, // Center the text below the QR code
+        padding + qrSize + padding, // Place it below the QR code with padding
+      ));
+
+      // Convert the canvas to an image and save it
+      final img = await pictureRecorder.endRecording().toImage(
+        totalWidth.toInt(),
+        totalHeight.toInt(),
+      );
+      final byteData = await img.toByteData(format: ui.ImageByteFormat.png);
+      final pngBytes = byteData!.buffer.asUint8List();
+
+      // Save the image
+      final file = File('$path/qr_code_${member['m_id']}.png');
+      await file.writeAsBytes(pngBytes);
+    } catch (e) {
+      throw Exception('Failed to generate QR code for member ${member['m_id']}: $e');
+    }
+  }
+
+
+
   @override
   Future<void> onInit() async {
     super.onInit();

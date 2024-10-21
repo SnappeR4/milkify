@@ -29,6 +29,8 @@ class MemberListPage extends StatelessWidget {
                 controller.importMembers();
               } else if (value == 'Export') {
                 controller.exportMembers();
+              } else if (value == 'Export All QR') {
+                controller.exportAllQrCodes(); // Call the new export QR method
               }
             },
             itemBuilder: (context) => [
@@ -39,6 +41,10 @@ class MemberListPage extends StatelessWidget {
               const PopupMenuItem<String>(
                 value: 'Export',
                 child: Text('Export Members'),
+              ),
+              const PopupMenuItem<String>(
+                value: 'Export All QR',
+                child: Text('Export All QR Codes'),
               ),
             ],
             icon: const Icon(Icons.more_vert), // Three vertical dot icon
