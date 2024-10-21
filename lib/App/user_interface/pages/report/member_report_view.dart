@@ -168,14 +168,33 @@ class MemberReportPage extends StatelessWidget {
 
   Widget _buildSearchBar() {
     return TextField(
-      decoration: const InputDecoration(
-        labelText: 'Search members',
-        hintText: 'Search Members',
-        border: OutlineInputBorder(),
+      onChanged: controller.searchMembers,
+      decoration: InputDecoration(
+        labelText: 'Search Members',
+        prefixIcon: const Icon(Icons.search),
+        suffixIcon: Obx(() {
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.qr_code_scanner),
+                onPressed: () {
+                  controller.scanQrCode(false);
+                },
+              ),
+              controller.searchQuery.value.isNotEmpty
+                  ? IconButton(
+                icon: const Icon(Icons.clear),
+                onPressed: controller.clearSearch,
+              )
+                  : Container(),
+            ],
+          );
+        }),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
       ),
-      onChanged: (value) {
-        controller.searchMembers(value);
-      },
     );
   }
 

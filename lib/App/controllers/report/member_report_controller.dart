@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:milkify/App/data/models/member_payment.dart';
 import 'package:milkify/App/data/models/transaction.dart';
 import 'package:milkify/App/data/services/database_helper.dart';
+import 'package:milkify/App/user_interface/widgets/qr_scanner.dart';
+import 'package:milkify/App/utils/logger.dart';
+import 'package:milkify/App/utils/utils.dart';
 import 'package:sqflite/sqflite.dart';
 
 class MemberReportController extends GetxController {
@@ -22,6 +27,8 @@ class MemberReportController extends GetxController {
   var fromDate = ''.obs; // Observable from date
   var toDate = ''.obs; // Observable to date
   var mId = 0.obs; // Observable member ID
+  var qrCodeResult = ''.obs;
+
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -143,7 +150,6 @@ class MemberReportController extends GetxController {
     });
   }
 
-  // Function to fetch payment transactions based on member ID and date range
   Future<void> fetchPaymentTransactions() async {
     final List<Map<String, dynamic>> paymentMaps = await database.query(
       'member_payment',
@@ -156,7 +162,6 @@ class MemberReportController extends GetxController {
     });
   }
 
-  // Combined function to fetch both sale and payment transactions
   Future<void> fetchTransactions() async {
     await fetchSaleTransactions();
     await fetchPaymentTransactions();
@@ -173,5 +178,27 @@ class MemberReportController extends GetxController {
   void setMemberId(int id) {
     mId.value = id;
     fetchTransactions(); // Fetch transactions when member ID is set
+  }
+
+  Future<void> scanQrCode(bool sale) async {
+    // Use QR code scanner here
+    final result = await Get.to(() => QrScannerScreen(sale: sale));
+
+    if (result != null) {
+      Logger.info(result.toString());
+
+      final String? code = result['code'];
+      // final bool toggle = result['toggle'] ?? false;
+
+      final decodedJson = jsonDecode(code!);
+
+      final String memberId = decodedJson['m_id'].toString();
+      Logger.info('Decoded Member ID: $memberId');
+      qrCodeResult.value = code;
+      final member = filteredMembers.firstWhere(
+        (member) => member['m_id'] == ConverterUtils.parseStringToInt(memberId),
+      );
+      selectMember(member);
+    }
   }
 }
