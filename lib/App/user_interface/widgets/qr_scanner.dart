@@ -3,20 +3,24 @@ import 'package:get/get.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QrScannerScreen extends StatefulWidget {
-  final bool sale; // Receive the 'sale' parameter
-
-  const QrScannerScreen({super.key, required this.sale});
+  final bool sale;
+  final bool toggle;
+  const QrScannerScreen({super.key, required this.sale, required this.toggle});
 
   @override
-  _QrScannerScreenState createState() => _QrScannerScreenState();
+  QrScannerScreenState createState() => QrScannerScreenState();
 }
 
-class _QrScannerScreenState extends State<QrScannerScreen> {
+class QrScannerScreenState extends State<QrScannerScreen> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
   bool isFlashOn = false;
-  bool isToggleOn = false; // Track the toggle state
-
+  late bool isToggleOn;
+  @override
+  void initState() {
+    super.initState();
+    isToggleOn = widget.toggle;
+  }
   @override
   void dispose() {
     controller?.dispose();

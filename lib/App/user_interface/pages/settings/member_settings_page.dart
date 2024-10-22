@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:milkify/App/controllers/settings/member_settings_controller.dart';
 import 'package:milkify/App/routes/app_routes.dart';
+import 'package:milkify/App/user_interface/widgets/loading_dialog.dart';
 import 'package:milkify/App/user_interface/widgets/member_widgets.dart';
 
 class MemberListPage extends StatelessWidget {
@@ -24,13 +25,15 @@ class MemberListPage extends StatelessWidget {
           ),
           PopupMenuButton<String>(
             color: Colors.white,
-            onSelected: (value) {
+            onSelected: (value) async {
               if (value == 'Import') {
                 controller.importMembers();
               } else if (value == 'Export') {
+                LoadingDialog.show(context);
                 controller.exportMembers();
               } else if (value == 'Export All QR') {
-                controller.exportAllQrCodes(); // Call the new export QR method
+                LoadingDialog.show(context);
+                controller.exportAllQrCodes();
               }
             },
             itemBuilder: (context) => [

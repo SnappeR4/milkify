@@ -17,7 +17,7 @@ class DashboardPage extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async {
         bool shouldExit = await _showExitConfirmationDialog(context);
-        return shouldExit; // Return true if the user wants to exit
+        return shouldExit;
       },
       child: Scaffold(
         appBar: AppBar(

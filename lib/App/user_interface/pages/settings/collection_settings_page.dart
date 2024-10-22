@@ -28,6 +28,13 @@ class CollectionSettingsPage extends StatelessWidget {
                 controller.updateSetting('dynamic_rate', value ? 1 : 0);
               },
             ),
+            SwitchListTile(
+              title: const Text('Continue Collection'),
+              value: settings['continue_coll'] == 1,
+              onChanged: (value) {
+                controller.updateSetting('continue_coll', value ? 1 : 0);
+              },
+            ),
             // SwitchListTile(
             //   title: const Text('Payment Flag'),
             //   value: settings['payment_flag'] == 1,

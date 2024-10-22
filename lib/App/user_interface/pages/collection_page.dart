@@ -68,7 +68,7 @@ class CollectionPage extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.qr_code_scanner),
                 onPressed: () {
-                  memberController.scanQrCode(false);
+                  memberController.scanQrCode(false, false);
                 },
               ),
               memberController.searchQuery.value.isNotEmpty

@@ -182,7 +182,7 @@ class MemberReportController extends GetxController {
 
   Future<void> scanQrCode(bool sale) async {
     // Use QR code scanner here
-    final result = await Get.to(() => QrScannerScreen(sale: sale));
+    final result = await Get.to(() => QrScannerScreen(sale: sale,toggle: false,));
 
     if (result != null) {
       Logger.info(result.toString());

@@ -54,7 +54,7 @@ class AddMemberPage extends StatelessWidget {
                 _buildTextField('Name', memberNameController,
                     isMandatory: true, maxLength: 30),
                 _buildTextField('Mobile Number', mobileNumberController,
-                    isMandatory: true, maxLength: 10, isNumeric: true),
+                    isMandatory: false, maxLength: 10, isNumeric: true),
                 _buildTextField('Address', addressController, maxLength: 50),
                 _buildMilkTypeDropdown(), // Dropdown for milk type
                 _buildTextField('Deposit', currentBalanceController,
@@ -91,7 +91,7 @@ class AddMemberPage extends StatelessWidget {
       };
       Logger.info(newMember.toString());
       controller.addMember(newMember); // Use the AddMemberController
-      Get.back(); // Go back after saving
+      Get.back();
     }
   }
 
@@ -120,7 +120,7 @@ class AddMemberPage extends StatelessWidget {
           if (maxLength != null && value != null && value.length > maxLength) {
             return 'Must be less than $maxLength characters';
           }
-          if (label == 'Mobile Number' &&
+          if (isMandatory && label == 'Mobile Number' &&
               value != null &&
               !RegExp(r'^\d{10}$').hasMatch(value)) {
             return 'Enter a valid 10-digit mobile number';

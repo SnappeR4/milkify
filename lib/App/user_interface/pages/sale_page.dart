@@ -68,7 +68,7 @@ class SalePage extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.qr_code_scanner),
                 onPressed: () {
-                  controller.scanQrCode(true);
+                  controller.scanQrCode(true,false);
                 },
               ),
               controller.searchQuery.value.isNotEmpty
@@ -148,6 +148,7 @@ class SalePage extends StatelessWidget {
           // Liters and Rate Input
           Obx(() {
             saleController.loadSettings();
+            controller.loadSettings();
             saleController.onScreenMilkRate.value = saleController.getRateForMilkType(
                 selectedMember['milk_type']);
             return Row(
@@ -399,13 +400,14 @@ class SalePage extends StatelessWidget {
 // Method to show the rate input dialog
   void _showRateDialog(String milkType, double currentRate) {
     final TextEditingController rateController = TextEditingController();
-    rateController.text = currentRate.toString(); // Pre-fill with current rate
+    rateController.text = currentRate.toString();
 
     Get.dialog(
       AlertDialog(
         backgroundColor: Colors.white,
         title: const Text('Set Rate'),
         content: TextField(
+          maxLength: 7,
           controller: rateController,
           keyboardType: TextInputType.number,
           decoration: const InputDecoration(hintText: 'Enter rate'),
@@ -413,7 +415,7 @@ class SalePage extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () {
-              Get.back(); // Close the dialog
+              Get.back();
             },
             child: const Text('Cancel'),
           ),

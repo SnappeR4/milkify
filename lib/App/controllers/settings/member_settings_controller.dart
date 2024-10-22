@@ -12,6 +12,7 @@ import 'package:milkify/App/data/models/member.dart';
 import 'package:milkify/App/data/models/transaction.dart';
 import 'package:milkify/App/data/services/member_service.dart';
 import 'package:milkify/App/user_interface/themes/app_theme.dart';
+import 'package:milkify/App/user_interface/widgets/loading_dialog.dart';
 import 'package:milkify/App/user_interface/widgets/qr_scanner.dart';
 import 'package:milkify/App/utils/utils.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -69,8 +70,8 @@ class MemberController extends GetxController {
     String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
     List<Map<String, dynamic>> result = await database.query(
-      'transactions', // Your table name
-      where: 'm_id = ? AND date = ?', // The condition for querying
+      'transactions',
+      where: 'm_id = ? AND date = ?',
       whereArgs: [
         member['m_id'],
         currentDate
@@ -81,7 +82,7 @@ class MemberController extends GetxController {
     // Check if transaction exists for the member (assuming you have a fetchTransactionByDateAndMember method)
     bool isTransactionExist = result.isNotEmpty;
 
-    if (isTransactionExist) {
+    if (isTransactionExist && settings['continue_coll'] == 0) {
       Get.defaultDialog(
         title: "Transaction Exists",
         middleText:
@@ -105,7 +106,6 @@ class MemberController extends GetxController {
         barrierDismissible: false, // Make it mandatory to choose an option
       );
     } else {
-      // If no transaction exists, proceed as usual
       saleController.fetchTransactions();
     }
   }
@@ -301,13 +301,12 @@ class MemberController extends GetxController {
 
   Future<void> loadSettings() async {
     settings.value =
-        await DatabaseHelper.getSettings(); // Fetch settings from database
+        await DatabaseHelper.getSettings();
   }
 
   Future<void> importMembers() async {
     List<Member>? importedMembers = await membersService.importMembers();
     if (importedMembers != null) {
-      // Delete all members from the database before inserting new ones
       await deleteAllMembers();
 
       // Insert imported members into the database
@@ -316,8 +315,8 @@ class MemberController extends GetxController {
           await insertMemberIntoDatabase(member);
         }
       }
-      Get.snackbar("Member File", "Imported Successfully");
       await fetchMembers();
+      Get.snackbar("Member File", "Imported Successfully");
     }
   }
 
@@ -337,6 +336,7 @@ class MemberController extends GetxController {
       'c_balance': member.currentBalance,
       'milk_type': member.milkType,
       'liters': member.liters,
+      'qr_code': jsonEncode({"m_id": member.id}),
     };
 
     // Insert the member into the database
@@ -349,7 +349,6 @@ class MemberController extends GetxController {
 
   Future<void> exportMembers() async {
     try {
-      // Convert RxList<Map<String, dynamic>> to List<Member>
       List<Member> membersList = members
           .map((member) => Member(
                 id: member['m_id'],
@@ -360,20 +359,21 @@ class MemberController extends GetxController {
                 currentBalance: member['c_balance'],
                 milkType: member['milk_type'],
                 liters: member['liters'],
-                qr_code: member['qr_code'],
+                qr_code: '',
               ))
           .toList();
 
       String response = await membersService.exportMembers(membersList);
+      await LoadingDialog.dismiss();
       Get.snackbar("Member File", response);
     } catch (e) {
       Logger.error('Error exporting members: $e');
     }
   }
 
-  Future<void> scanQrCode(bool sale) async {
+  Future<void> scanQrCode(bool sale, bool toggle) async {
     // Use QR code scanner here
-    final result = await Get.to(() => QrScannerScreen(sale: sale));
+    final result = await Get.to(() => QrScannerScreen(sale: sale,toggle: toggle,));
 
     if (result != null) {
       Logger.info(result.toString());
@@ -397,7 +397,7 @@ class MemberController extends GetxController {
             if (rate > 0.0 && liters > 0.0) {
               await submitTransaction(member, liters, rate, liters * rate);
               await Future.delayed(const Duration(seconds: 1));
-              await scanQrCode(toggle);
+              await scanQrCode(sale,toggle);
             } else {
               Get.snackbar("Error", "Liters or rate cannot be 0");
             }
@@ -442,9 +442,9 @@ class MemberController extends GetxController {
 
 // Method to export all QR codes to /Download/Milkify QR
   Future<void> exportAllQrCodes() async {
-    // Request storage permission
     var status = await Permission.storage.request();
     if (!status.isGranted) {
+      await LoadingDialog.dismiss();
       Get.snackbar('Permission Denied', 'Storage permission is required to save QR codes');
       return;
     }
@@ -460,19 +460,20 @@ class MemberController extends GetxController {
       for (var member in filteredMembers) {
         await generateAndSaveQrCode(member, downloadDir.path);
       }
+      await LoadingDialog.dismiss();
       Get.snackbar('Success', 'All QR codes exported to Download/Milkify QR folder ');
     } catch (e) {
+      await LoadingDialog.dismiss();
       Get.snackbar('Error', 'An error occurred while exporting QR codes: $e');
     }
   }
-
   Future<void> generateAndSaveQrCode(Map<String, dynamic> member, String path) async {
     try {
       // Set padding
       const double padding = 20.0;
 
-      // Define sizes
-      const double qrSize = 200.0;
+      // Define QR code size and other sizes
+      const double qrSize = 300.0;
       const double textHeight = 50.0;
       const double totalWidth = qrSize + 2 * padding;  // Total width with padding
       const double totalHeight = qrSize + textHeight + 3 * padding; // Total height with padding for QR, text, and additional spacing
@@ -487,13 +488,11 @@ class MemberController extends GetxController {
         paint,
       );
 
-      // Create QR code
       final qrImage = QrPainter(
-        data: member['m_id'].toString(),
+        data: jsonEncode({"m_id": member['m_id'].toString()}),
         version: QrVersions.auto,
         gapless: false,
-        // color: Colors.black,
-        // emptyColor: Colors.white,
+        errorCorrectionLevel: QrErrorCorrectLevel.H,  // Higher error correction
       );
 
       // Paint the QR code with padding
@@ -523,10 +522,12 @@ class MemberController extends GetxController {
         padding + qrSize + padding, // Place it below the QR code with padding
       ));
 
-      // Convert the canvas to an image and save it
+      // Convert the canvas to an image and save it with high resolution
       final img = await pictureRecorder.endRecording().toImage(
-        totalWidth.toInt(),
-        totalHeight.toInt(),
+        // (totalWidth * 3).toInt(),
+        // (totalHeight * 3).toInt(),
+        (totalWidth).toInt(),
+        (totalHeight).toInt(),
       );
       final byteData = await img.toByteData(format: ui.ImageByteFormat.png);
       final pngBytes = byteData!.buffer.asUint8List();
@@ -538,6 +539,78 @@ class MemberController extends GetxController {
       throw Exception('Failed to generate QR code for member ${member['m_id']}: $e');
     }
   }
+  // Future<void> generateAndSaveQrCode(Map<String, dynamic> member, String path) async {
+  //   try {
+  //     // Set padding
+  //     const double padding = 20.0;
+  //
+  //     // Define sizes
+  //     const double qrSize = 200.0;
+  //     const double textHeight = 50.0;
+  //     const double totalWidth = qrSize + 2 * padding;  // Total width with padding
+  //     const double totalHeight = qrSize + textHeight + 3 * padding; // Total height with padding for QR, text, and additional spacing
+  //
+  //     final pictureRecorder = ui.PictureRecorder();
+  //     final canvas = Canvas(pictureRecorder);
+  //
+  //     // Draw background
+  //     final paint = Paint()..color = Colors.white;
+  //     canvas.drawRect(
+  //       const Rect.fromLTWH(0, 0, totalWidth, totalHeight),
+  //       paint,
+  //     );
+  //
+  //     // Create QR code
+  //     final qrImage = QrPainter(
+  //       data: member['m_id'].toString(),
+  //       version: QrVersions.auto,
+  //       gapless: false,
+  //       // color: Colors.black,
+  //       // emptyColor: Colors.white,
+  //     );
+  //
+  //     // Paint the QR code with padding
+  //     // Translate the canvas to account for padding
+  //     canvas.translate(padding, padding);
+  //     qrImage.paint(canvas, const Size(qrSize, qrSize));
+  //
+  //     // Prepare the text below the QR code
+  //     final textPainter = TextPainter(
+  //       text: TextSpan(
+  //         text: 'ID: ${member['m_id']}\nName: ${member['name']}',
+  //         style: const TextStyle(color: Colors.black, fontSize: 16.0),
+  //       ),
+  //       textAlign: TextAlign.center,
+  //       textDirection: ui.TextDirection.ltr,
+  //     );
+  //
+  //     // Layout the text
+  //     textPainter.layout(
+  //       minWidth: 0,
+  //       maxWidth: qrSize, // Keep text width the same as QR code width
+  //     );
+  //
+  //     // Paint the text
+  //     textPainter.paint(canvas, Offset(
+  //       (qrSize - textPainter.width) / 2, // Center the text below the QR code
+  //       padding + qrSize + padding, // Place it below the QR code with padding
+  //     ));
+  //
+  //     // Convert the canvas to an image and save it
+  //     final img = await pictureRecorder.endRecording().toImage(
+  //       totalWidth.toInt(),
+  //       totalHeight.toInt(),
+  //     );
+  //     final byteData = await img.toByteData(format: ui.ImageByteFormat.png);
+  //     final pngBytes = byteData!.buffer.asUint8List();
+  //
+  //     // Save the image
+  //     final file = File('$path/qr_code_${member['m_id']}.png');
+  //     await file.writeAsBytes(pngBytes);
+  //   } catch (e) {
+  //     throw Exception('Failed to generate QR code for member ${member['m_id']}: $e');
+  //   }
+  // }
 
 
 

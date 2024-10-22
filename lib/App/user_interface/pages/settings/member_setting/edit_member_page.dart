@@ -1,10 +1,6 @@
 import 'dart:convert';
-import 'dart:typed_data';
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../../../../controllers/settings/member_settings_controller.dart';
 
@@ -15,18 +11,20 @@ class EditMemberPage extends StatelessWidget {
       Get.arguments; // Get the member data passed to the page
 
   final MemberController memberSettingsController =
-  Get.find<MemberController>();
+      Get.find<MemberController>();
   final GlobalKey _globalKey = GlobalKey(); // Key for RepaintBoundary
   final TextEditingController memberNameController = TextEditingController();
   final TextEditingController mobileNumberController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController recentlyPaidController = TextEditingController();
   final TextEditingController currentBalanceController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController litersController = TextEditingController();
+
   // Dropdown values for milk type
   final List<String> milkTypes = ['Cow', 'Buffalo', 'Mix'];
   final RxString selectedMilkType = ''.obs;
+
   @override
   Widget build(BuildContext context) {
     // Pre-fill text controllers with member data
@@ -37,7 +35,6 @@ class EditMemberPage extends StatelessWidget {
     currentBalanceController.text = member['c_balance'].toString();
     litersController.text = member['liters'].toString();
     selectedMilkType.value = member['milk_type'] ?? 'Cow'; // Default to 'Cow'
-
 
     return Scaffold(
       appBar: AppBar(
@@ -51,7 +48,7 @@ class EditMemberPage extends StatelessWidget {
               _buildNonEditableField('Member ID', member['m_id'].toString()),
               _buildTextField('Name', memberNameController, isMandatory: true),
               _buildTextField('Mobile Number', mobileNumberController,
-                  isMandatory: true),
+                  isMandatory: false),
               _buildTextField('Address', addressController),
               _buildDropdownField('Milk Type', selectedMilkType),
               // Dropdown for milk type
@@ -61,11 +58,6 @@ class EditMemberPage extends StatelessWidget {
               // _buildQrCode(jsonEncode({"m_id": member['m_id'].toString()})),
               // Screenshot widget for capturing QR code with member details
               _buildQrCodeWithDetails(),
-              const SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: _downloadQrCode,
-                child: const Text('Download QR Code'),
-              ),
               const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: _updateMember,
@@ -78,30 +70,6 @@ class EditMemberPage extends StatelessWidget {
     );
   }
 
-  Future<void> _downloadQrCode() async {
-    try {
-      // Find the boundary
-      RenderRepaintBoundary boundary =
-      _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-
-      // Capture the image from the boundary
-      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
-      ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-      Uint8List pngBytes = byteData!.buffer.asUint8List();
-
-      // Save the image to gallery
-      final result = await ImageGallerySaver.saveImage(pngBytes, name: "qr_code_${member['m_id']}");
-      if (result != null && result['isSuccess']) {
-        Get.snackbar('Success', 'QR Code saved to gallery');
-      } else {
-        Get.snackbar('Error', 'Failed to save the QR Code');
-      }
-    } catch (e) {
-      Get.snackbar('Error', 'An error occurred: $e');
-    }
-  }
-
-  // Widget to display QR code and member details
   Widget _buildQrCodeWithDetails() {
     return RepaintBoundary(
       key: _globalKey, // Assign the key to capture this widget
@@ -115,13 +83,16 @@ class EditMemberPage extends StatelessWidget {
               size: 200.0,
             ),
             const SizedBox(height: 16.0),
-            Text('ID: ${member['m_id']}', style: const TextStyle(fontSize: 16.0)),
-            Text('Name: ${member['name']}', style: const TextStyle(fontSize: 16.0)),
+            Text('ID: ${member['m_id']}',
+                style: const TextStyle(fontSize: 16.0)),
+            Text('Name: ${member['name']}',
+                style: const TextStyle(fontSize: 16.0)),
           ],
         ),
       ),
     );
   }
+
   // Function to update member details with validation
   void _updateMember() {
     String name = memberNameController.text;
@@ -138,8 +109,7 @@ class EditMemberPage extends StatelessWidget {
       Get.snackbar('Error', 'Name cannot be more than 30 characters');
       return;
     }
-
-    if (mobileNumber.length != 10) {
+    if (mobileNumber.isNotEmpty && mobileNumber.length != 10) {
       Get.snackbar('Error', 'Mobile Number must be 10 digits');
       return;
     }
@@ -177,8 +147,7 @@ class EditMemberPage extends StatelessWidget {
   Widget _buildDropdownField(String label, RxString selectedValue) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Obx(() =>
-          DropdownButtonFormField<String>(
+      child: Obx(() => DropdownButtonFormField<String>(
             value: selectedValue.value.isNotEmpty ? selectedValue.value : null,
             items: milkTypes.map((String type) {
               return DropdownMenuItem<String>(
@@ -211,8 +180,8 @@ class EditMemberPage extends StatelessWidget {
           border: const OutlineInputBorder(),
         ),
         keyboardType: (label == 'Recently Paid' ||
-            label == 'Current Balance' ||
-            label == 'Liters of Milk')
+                label == 'Current Balance' ||
+                label == 'Liters of Milk')
             ? const TextInputType.numberWithOptions(decimal: true)
             : TextInputType.text,
       ),
@@ -233,14 +202,14 @@ class EditMemberPage extends StatelessWidget {
       ),
     );
   }
-  // Helper widget to display QR code
-  // Widget _buildQrCode(String qrData) {
-  //   return qrData.isNotEmpty
-  //       ? QrImageView(
-  //     data: qrData,
-  //     version: QrVersions.auto,
-  //     size: 200.0,
-  //   )
-  //       : const Text('No QR Code available');
-  // }
+// Helper widget to display QR code
+// Widget _buildQrCode(String qrData) {
+//   return qrData.isNotEmpty
+//       ? QrImageView(
+//     data: qrData,
+//     version: QrVersions.auto,
+//     size: 200.0,
+//   )
+//       : const Text('No QR Code available');
+// }
 }

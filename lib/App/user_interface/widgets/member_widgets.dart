@@ -62,17 +62,18 @@ class MemberWidgets {
                     ),
                     const SizedBox(height: 8.0),
 
-                    // Mobile number
-                    Row(
-                      children: [
-                        const Icon(Icons.phone, size: 18, color: Colors.grey),
-                        const SizedBox(width: 8.0),
-                        Text(
-                          member['mobile_number'],
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                      ],
-                    ),
+                    if (member['mobile_number']?.isNotEmpty ?? false)
+                      Row(
+                        children: [
+                          const Icon(Icons.phone, size: 18, color: Colors.grey),
+                          const SizedBox(width: 8.0),
+                          Text(
+                            member['mobile_number'],
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ],
+                      ),
+                    if (member['mobile_number']?.isNotEmpty ?? false)
                     const SizedBox(height: 8.0),
 
                     // Balance

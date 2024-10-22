@@ -79,6 +79,7 @@ class DatabaseHelper {
         install_date TEXT,
         payment_flag INTEGER,
         dynamic_rate INTEGER,
+        continue_coll INTEGER,
         add_on_flag INTEGER
       )
     ''');
@@ -113,6 +114,7 @@ class DatabaseHelper {
       'install_date': null,
       'payment_flag': null,
       'dynamic_rate': null,
+      'continue_coll': 0,
       'add_on_flag': null,
     });
 
